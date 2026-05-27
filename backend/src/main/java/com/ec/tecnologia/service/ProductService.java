@@ -43,14 +43,14 @@ public class ProductService {
 
                 if (exists){
 
-                    return new ResponseEntity("El producto ya existe en el sistema", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>("El producto ya existe en el sistema", HttpStatus.BAD_REQUEST);
 
                 }else{
 
                     CategoryEntity categoryEntity = getCategory(productDto);
 
                     if (categoryEntity == null){
-                        return new ResponseEntity("La Categoria no existe", HttpStatus.BAD_REQUEST);
+                        return new ResponseEntity<>("La Categoria no existe", HttpStatus.BAD_REQUEST);
                     }else{
                         ProductEntity newProductEntity = new ProductEntity();
                         newProductEntity.setName(productDto.getName());
@@ -61,7 +61,7 @@ public class ProductService {
 
                         productRepository.save(newProductEntity);
 
-                        return new ResponseEntity("Producto agregado correctamente", HttpStatus.CREATED);
+                        return new ResponseEntity<>("Producto agregado correctamente", HttpStatus.CREATED);
                     }
                 }
             }else{
@@ -94,10 +94,10 @@ public class ProductService {
 
             if (jwtAuthenticationFilter.isAdmin()){
 
-                return new ResponseEntity(productRepository.getAllProduct(), HttpStatus.OK);
+                return new ResponseEntity<>(productRepository.getAllProduct(), HttpStatus.OK);
 
             }else{
-                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
         }catch (Exception e){
@@ -108,6 +108,7 @@ public class ProductService {
 
     //-----------------------------------------------------------------------------------------------------------------
 
+    //Metodo actualizar producto
     public ResponseEntity<?> updateProduct(Long id, ProductDto productDto){
 
         try {

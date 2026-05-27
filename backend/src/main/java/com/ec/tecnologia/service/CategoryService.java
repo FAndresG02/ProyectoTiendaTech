@@ -5,6 +5,7 @@ import com.ec.tecnologia.entity.CategoryEntity;
 import com.ec.tecnologia.repository.CategoryRepository;
 import com.ec.tecnologia.security.JwtAuthenticationFilter;
 import com.ec.tecnologia.utils.TecUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class CategoryService {
 
@@ -37,9 +39,9 @@ public class CategoryService {
                 return TecUtils.getResponseEntity(TecConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
             }
         } catch (Exception e){
-            e.printStackTrace();
+            log.error("Error al añadir la categoria", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     //---------------------------------------------------------------------------------------------------------------
@@ -52,10 +54,9 @@ public class CategoryService {
             return new ResponseEntity<>(categoryRepository.findAll(), HttpStatus.OK);
 
         }catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("Error al obtener las categorías", e);
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     //----------------------------------------------------------------------------------------------------------------
@@ -85,10 +86,9 @@ public class CategoryService {
             }
 
         }catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("Error al actualizar la categoria", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     //----------------------------------------------------------------------------------------------------------------
@@ -116,9 +116,8 @@ public class CategoryService {
 
 
         }catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("Error al eliminar la categoria", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

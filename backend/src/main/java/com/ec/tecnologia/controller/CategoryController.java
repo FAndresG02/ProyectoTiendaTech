@@ -4,6 +4,7 @@ import com.ec.tecnologia.config.TecConstants;
 import com.ec.tecnologia.entity.CategoryEntity;
 import com.ec.tecnologia.service.CategoryService;
 import com.ec.tecnologia.utils.TecUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RestController //manejara peticiones HTTP
 @RequestMapping(path = "/category") //define la ruta de las peticiones
 public class CategoryController {
@@ -27,10 +29,9 @@ public class CategoryController {
             return categoryService.addCategory(categoryEntity);
 
         }catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("Error al añadir la categoria", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping(path = "/getCategories")
@@ -41,10 +42,9 @@ public class CategoryController {
             return categoryService.getCategories();
 
         }catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("Error al obtener las categorías", e);
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PutMapping(path = "updateCategory")
@@ -55,10 +55,9 @@ public class CategoryController {
             return categoryService.updateCategory(categoryEntity);
 
         }catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("Error al actualizar la categoria", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @DeleteMapping(path = "/deleteCategory/{id}")
@@ -68,10 +67,9 @@ public class CategoryController {
             return categoryService.deleteCategory(id);
 
         }catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("Error al eliminar la categoria", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 

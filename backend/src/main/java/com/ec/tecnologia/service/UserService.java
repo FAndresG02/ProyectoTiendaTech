@@ -17,7 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +52,7 @@ public class UserService {
 
             if (userEntity != null) {
                 return new ResponseEntity("El email ya existe en el sistema", HttpStatus.BAD_REQUEST);
-            }else{
+            } else {
 
                 UserEntity user = new UserEntity();
                 user.setName(signupRequest.getName());
@@ -69,12 +68,10 @@ public class UserService {
 
             }
 
-        }catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            log.error("Error al agregar al usuario", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     //-----------------------------------------------------------------------------------------------------------------
@@ -101,8 +98,8 @@ public class UserService {
                     )
             ); // autentica usuario con email y password
 
-            if (auth.isAuthenticated()){
-                if (customerUsersDetailsService.getUserDetail().isStatus()){
+            if (auth.isAuthenticated()) {
+                if (customerUsersDetailsService.getUserDetail().isStatus()) {
                     String token = jwtUtil.generateToken(
                             customerUsersDetailsService.getUserDetail().getEmail(),
                             customerUsersDetailsService.getUserDetail().getRole()
@@ -114,20 +111,21 @@ public class UserService {
                                     "token", token
                             )
                     );// devuelve token en JSON automático
-                }else{
+                } else {
                     return ResponseEntity.badRequest()
-                            .body(Map.of("message","Espere la aprobación del administrador."));
+                            .body(Map.of("message", "Espere la aprobación del administrador."));
                 }
+            }else{
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("message", "Credenciales inválidas."));
             }
 
-
-        }catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            log.error("Error al iniciar sesión", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return TecUtils.getResponseEntity("Credenciales Incorrectas", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 
     //-----------------------------------------------------------------------------------------------------------------
 
@@ -146,11 +144,9 @@ public class UserService {
             }
 
         }catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("Error al obtener a los usuarios", e);
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     //-----------------------------------------------------------------------------------------------------------------
@@ -180,11 +176,9 @@ public class UserService {
             }
 
         }catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("Error al actualizar el usuario", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     //-----------------------------------------------------------------------------------------------------------------
@@ -251,11 +245,9 @@ public class UserService {
             }
 
         } catch (Exception e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            log.error("Error al cambiar la contraseña", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     //--------------------------------------------------------------------------------------------------------------------
@@ -285,10 +277,8 @@ public class UserService {
             }
 
         }catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("Error al eliminar al usuario", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
