@@ -5,6 +5,7 @@ import com.ec.tecnologia.config.TecConstants;
 import com.ec.tecnologia.dto.user.*;
 import com.ec.tecnologia.service.UserService;
 import com.ec.tecnologia.utils.TecUtils;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignupDto signupRequest) {
+    public ResponseEntity<?> signup(@Valid @RequestBody SignupDto signupRequest) {
         try {
 
             return userService.signUp(signupRequest);
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDto loginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginRequest) {
 
         try {
 
@@ -62,7 +63,7 @@ public class UserController {
 
     //metodo para actualizar el status del usuario normal siendo administrador
     @PatchMapping("/update-status")
-    public ResponseEntity<?> updateStatus(@RequestBody UpdateStatusDto updateStatusRequest) {
+    public ResponseEntity<?> updateStatus(@Valid @RequestBody UpdateStatusDto updateStatusRequest) {
 
         try {
 
@@ -76,7 +77,7 @@ public class UserController {
 
     //Peticion post para cambiar la contraseña
     @PatchMapping(path = "/changePassword")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDto changePasswordRequest) {
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDto changePasswordRequest) {
 
         try {
 
@@ -90,11 +91,39 @@ public class UserController {
 
     //Eliminar usuarios normales
     @DeleteMapping(path = "/deleteUser/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUser(@Valid @PathVariable Long id) {
 
         try {
 
             return userService.deleteUser(id);
+
+        }catch (Exception e){
+            log.error("Error al eliminar al usuario", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Cambiar un usuario a admin
+    @PatchMapping(path = "/update-role")
+    public ResponseEntity<?> updateRole(@Valid @RequestBody UpdateRoleDto updateRoleRequest) {
+
+        try {
+
+            return userService.updateRole(updateRoleRequest);
+
+        }catch (Exception e){
+            log.error("Error al eliminar al usuario", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Actualizar datos de un usuario
+    @PatchMapping(path = "/update-user")
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUserDto updateUserRequest) {
+
+        try {
+
+            return userService.updateUser(updateUserRequest);
 
         }catch (Exception e){
             log.error("Error al eliminar al usuario", e);

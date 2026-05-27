@@ -5,7 +5,6 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-@Valid
 public class ProductDto {
 
     @NotBlank(message = "El nombre no puede estar vacío")

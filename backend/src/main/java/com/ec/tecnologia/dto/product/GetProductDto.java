@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.Data;
 
 @Data
-@Valid
 public class GetProductDto {
 
     private Long id;

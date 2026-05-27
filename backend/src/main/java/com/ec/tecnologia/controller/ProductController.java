@@ -5,6 +5,7 @@ import com.ec.tecnologia.dto.product.GetProductDto;
 import com.ec.tecnologia.dto.product.ProductDto;
 import com.ec.tecnologia.service.ProductService;
 import com.ec.tecnologia.utils.TecUtils;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping(path = "/addProduct")
-    public ResponseEntity<?> addProduct(@RequestBody ProductDto productDto){
+    public ResponseEntity<?> addProduct(@Valid @RequestBody ProductDto productDto){
 
         try {
 
@@ -50,7 +51,7 @@ public class ProductController {
     }
 
     @PutMapping(path = "/updateProduct/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto){
+    public ResponseEntity<?> updateProduct(@Valid @PathVariable Long id, @RequestBody ProductDto productDto){
 
         try {
 

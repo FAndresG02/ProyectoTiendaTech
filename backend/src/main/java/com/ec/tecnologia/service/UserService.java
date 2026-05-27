@@ -8,6 +8,7 @@ import com.ec.tecnologia.security.CustomerUsersDetailsService;
 import com.ec.tecnologia.security.JwtAuthenticationFilter;
 import com.ec.tecnologia.security.JwtUtil;
 import com.ec.tecnologia.utils.TecUtils;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -281,4 +285,84 @@ public class UserService {
             return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    //-----------------------------------------------------------------------------------------------------------------
+
+    //Cambiar el role de cualquier usuario con permiso de un admin
+    public ResponseEntity<?> updateRole(UpdateRoleDto updateRoleRequest) {
+
+        try {
+
+            if (jwtAuthenticationFilter.isAdmin()) {
+
+                Optional<UserEntity> userEntity = userRepository.findById(updateRoleRequest.getId());
+
+                if (userEntity.isPresent()) {
+
+                    userRepository.updateRole(updateRoleRequest.getRole(), updateRoleRequest.getId());
+
+                    return TecUtils.getResponseEntity("El rol del usuario actualizado correctamente",
+                            HttpStatus.OK);
+                }else{
+                    return TecUtils.getResponseEntity(TecConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+                }
+            }else{
+                return TecUtils.getResponseEntity(TecConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+            }
+
+        }catch (Exception e){
+            log.error("Error al cambiar de rol al usuario", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
+
+    //Metodo para actualizar datos de un usuario
+    public ResponseEntity<?> updateUser(UpdateUserDto updateUserRequest) {
+
+        try {
+
+            UserEntity userEntity = validateUser(updateUserRequest);
+
+            if(userEntity == null){
+                return TecUtils.getResponseEntity("No existen cambios por hacerse",
+                        HttpStatus.BAD_REQUEST);
+            }else{
+
+                userEntity.setName(updateUserRequest.getName());
+                userEntity.setContactNumber(updateUserRequest.getContactNumber());
+                userEntity.setEmail(updateUserRequest.getEmail());
+                userRepository.save(userEntity);
+
+                return TecUtils.getResponseEntity("Usuario actualizado correctamente", HttpStatus.OK);
+            }
+
+        }catch (Exception e){
+            log.error("Error al eliminar al usuario", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private UserEntity validateUser(UpdateUserDto updateUserRequest){
+
+        Optional<UserEntity> userEntityOptional = userRepository.findById(updateUserRequest.getId());
+
+        if (userEntityOptional.isEmpty()) {
+            throw new RuntimeException("Usuario no existe");
+        }
+
+        UserEntity userEntity = userEntityOptional.get();
+
+        boolean noChanges =
+                userEntity.getName().equals(updateUserRequest.getName()) &&
+                        userEntity.getContactNumber().equals(updateUserRequest.getContactNumber()) &&
+                        userEntity.getEmail().equals(updateUserRequest.getEmail());
+
+        if (noChanges) {
+            return null;
+        }
+        return userEntity;
+    }
+
 }

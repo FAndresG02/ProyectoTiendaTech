@@ -4,6 +4,7 @@ import com.ec.tecnologia.config.TecConstants;
 import com.ec.tecnologia.entity.CategoryEntity;
 import com.ec.tecnologia.service.CategoryService;
 import com.ec.tecnologia.utils.TecUtils;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @PostMapping(path = "/addCategory")
-    public ResponseEntity<?> addCategory(@RequestBody CategoryEntity categoryEntity){
+    public ResponseEntity<?> addCategory(@Valid @RequestBody CategoryEntity categoryEntity){
 
         try {
 
@@ -48,7 +49,7 @@ public class CategoryController {
     }
 
     @PutMapping(path = "updateCategory")
-    public ResponseEntity<?> updateCategory(@RequestBody CategoryEntity categoryEntity){
+    public ResponseEntity<?> updateCategory(@Valid @RequestBody CategoryEntity categoryEntity){
 
         try {
 
@@ -61,7 +62,7 @@ public class CategoryController {
     }
 
     @DeleteMapping(path = "/deleteCategory/{id}")
-    public ResponseEntity<?> deleteCategory(@PathVariable Long id){
+    public ResponseEntity<?> deleteCategory(@Valid @PathVariable Long id){
         try {
 
             return categoryService.deleteCategory(id);
