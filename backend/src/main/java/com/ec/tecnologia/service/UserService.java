@@ -192,6 +192,7 @@ public class UserService {
 
         try {
 
+            //Aqui se obtiene el usuario ya iniciado sesion
             UserEntity userEntity = userRepository.findByEmail(jwtAuthenticationFilter.getCurrentUser());
 
             //Verificamos que el usuario exista en la base de datos
@@ -364,5 +365,6 @@ public class UserService {
         }
         return userEntity;
     }
+
 
 }

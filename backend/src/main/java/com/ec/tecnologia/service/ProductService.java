@@ -184,4 +184,32 @@ public class ProductService {
 
         return productEntity;
     }
+
+    //----------------------------------------------------------------------------------------------------------------
+
+    //Metodo para eliminar el producto
+    public ResponseEntity<?> deleteProduct(Long id){
+
+        try {
+
+            if (jwtAuthenticationFilter.isAdmin()){
+
+                Optional<ProductEntity> productEntity = productRepository.findById(id);
+
+                if (productEntity.isPresent()){
+
+                    productRepository.deleteById(id);
+                    return TecUtils.getResponseEntity("Producto eliminado correctamente", HttpStatus.OK);
+                }else {
+                    return TecUtils.getResponseEntity("Producto no existe", HttpStatus.NOT_FOUND);
+                }
+            }else{
+                return TecUtils.getResponseEntity(TecConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+            }
+
+        }catch (Exception e){
+            log.error("Error al eliminar el producto", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

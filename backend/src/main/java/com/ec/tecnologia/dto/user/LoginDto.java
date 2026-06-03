@@ -12,6 +12,6 @@ public class LoginDto {
     @Email(message = "El email no es valido")
     private String email;
 
-    @Size(min = 4, message = "Mínimo 4 caracteres")
+    @Size(min = 3, message = "Mínimo 4 caracteres")
     private String password;
 }

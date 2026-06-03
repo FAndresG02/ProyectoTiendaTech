@@ -64,4 +64,18 @@ public class ProductController {
 
     }
 
+    //Metodo para eliminar el producto
+    @DeleteMapping(path = "/deleteProduct/{id}")
+    public ResponseEntity<?> deleteProduct(@Valid @PathVariable Long id){
+
+        try {
+
+            return productService.deleteProduct(id);
+
+        }catch (Exception e){
+            log.error("Error al eliminar el producto", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
