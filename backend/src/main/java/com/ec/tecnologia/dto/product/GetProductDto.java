@@ -1,9 +1,12 @@
 package com.ec.tecnologia.dto.product;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class GetProductDto {
 
     private Long id;
@@ -14,6 +17,7 @@ public class GetProductDto {
     private Long categoryId;
     private String categoryName;
 
+    //Este se usa para extraer todos los productos
     public GetProductDto(Long id,
                          String name,
                          String description,

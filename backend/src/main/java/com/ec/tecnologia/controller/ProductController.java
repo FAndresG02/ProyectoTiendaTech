@@ -1,6 +1,8 @@
 package com.ec.tecnologia.controller;
 
 import com.ec.tecnologia.config.TecConstants;
+import com.ec.tecnologia.dto.product.GetProductByCategory;
+import com.ec.tecnologia.dto.product.GetProductById;
 import com.ec.tecnologia.dto.product.GetProductDto;
 import com.ec.tecnologia.dto.product.ProductDto;
 import com.ec.tecnologia.service.ProductService;
@@ -36,6 +38,7 @@ public class ProductController {
         }
     }
 
+    //Metodo para obtner la lista de productos
     @GetMapping(path = "/getProducts")
     public ResponseEntity<List<GetProductDto>> getProducts() {
 
@@ -47,6 +50,34 @@ public class ProductController {
 
             log.error("Error al obtener los productos", e);
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Metodo para obtener productos por categoria
+    @GetMapping(path = "/getProductByCategory/{categoryId}")
+    public ResponseEntity<List<GetProductByCategory>> getProductByCategory(@PathVariable Long categoryId) {
+
+        try {
+
+            return productService.getProductByCategory(categoryId);
+
+        }catch (Exception e){
+            log.error("Error al obtener los productos por categoria", e);
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Metodo para obtener un producto por su id
+    @GetMapping(path = "/getProductById/{id}")
+    public ResponseEntity<GetProductById> getProductById(@PathVariable Long id) {
+
+        try {
+
+            return productService.getProductById(id);
+
+        }catch (Exception e){
+            log.error("Error al obtener el producto", e);
+            return new ResponseEntity<>(new GetProductById(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -77,5 +108,9 @@ public class ProductController {
             return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
+
 
 }

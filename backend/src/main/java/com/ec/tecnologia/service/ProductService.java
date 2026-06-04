@@ -1,6 +1,8 @@
 package com.ec.tecnologia.service;
 
 import com.ec.tecnologia.config.TecConstants;
+import com.ec.tecnologia.dto.product.GetProductByCategory;
+import com.ec.tecnologia.dto.product.GetProductById;
 import com.ec.tecnologia.dto.product.GetProductDto;
 import com.ec.tecnologia.dto.product.ProductDto;
 import com.ec.tecnologia.entity.CategoryEntity;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.util.ArrayList;
@@ -103,6 +107,38 @@ public class ProductService {
         }catch (Exception e){
             log.error("Error al obtener los productos", e);
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Metodo para obtener todos los productos de una categoria
+    public ResponseEntity<List<GetProductByCategory>> getProductByCategory(@RequestParam Long categoryId) {
+
+        try {
+
+            if (jwtAuthenticationFilter.isAdmin()){
+
+                return new ResponseEntity<>(productRepository.getProductsByCategory(categoryId), HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+
+        }catch (Exception e){
+            log.error("Error al obtener los productos por categoria", e);
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Metodo para obtener un producto por su id
+    public ResponseEntity<GetProductById> getProductById(@PathVariable Long id) {
+
+        try {
+
+            return new ResponseEntity<>(productRepository.getProductById(id), HttpStatus.OK);
+
+
+        }catch (Exception e){
+            log.error("Error al obtener el producto", e);
+            return new ResponseEntity<>(new GetProductById(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
