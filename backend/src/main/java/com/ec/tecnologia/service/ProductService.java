@@ -36,7 +36,6 @@ public class ProductService {
     private CategoryRepository categoryRepository;
     @Autowired
     private ProductRepository productRepository;
-
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
