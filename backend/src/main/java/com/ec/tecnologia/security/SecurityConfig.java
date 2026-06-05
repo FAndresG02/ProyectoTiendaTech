@@ -1,5 +1,6 @@
 package com.ec.tecnologia.security;
 
+import com.ec.tecnologia.config.CorsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +38,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/login", "/users/signup", "/users/forgotPassword")
+                        .requestMatchers("/users/login",
+                                "/users/signup",
+                                "/users/forgotPassword")
                         .permitAll()
                         .anyRequest()
                         .authenticated()

@@ -10,12 +10,15 @@ public class GetProductById {
     private String name;
     private String description;
     private Double price;
+    private String picture;
+
 
     //Este se usa para extraer un producto por id
-    public GetProductById(Long id, String name, String description, Double price) {
+    public GetProductById(Long id, String name, String description, Double price , String picture) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
+        this.picture = picture;
     }
 }

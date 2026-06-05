@@ -5,8 +5,10 @@ import com.ec.tecnologia.dto.product.GetProductById;
 import com.ec.tecnologia.dto.product.GetProductDto;
 import com.ec.tecnologia.entity.ProductEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
             "p.name, " +
             "p.description, " +
             "p.price, " +
+            "p.picture," +
             "p.status, " +
             "p.category.id, " +
             "p.category.name)" +
@@ -43,10 +46,18 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
             "p.id, " +
             "p.name, " +
             "p.description, " +
-            "p.price) " +
+            "p.price, " +
+            "p.picture) " +
             "from ProductEntity p " +
             "where p.id= :id")
     GetProductById getProductById(@Param("id") Long id);
+
+    //Actualizar status
+    @Transactional
+    @Modifying
+    @Query("update ProductEntity u set u.status = :status where u.id = :id")
+    int updateStatusProduct(@Param("status") Boolean status,
+                     @Param("id") Long id);
 
 
 }

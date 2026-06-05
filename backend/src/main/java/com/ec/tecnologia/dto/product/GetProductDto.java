@@ -13,6 +13,7 @@ public class GetProductDto {
     private String name;
     private String description;
     private Double price;
+    private String picture;
     private boolean status;
     private Long categoryId;
     private String categoryName;
@@ -22,6 +23,7 @@ public class GetProductDto {
                          String name,
                          String description,
                          Double price,
+                         String picture,
                          boolean status,
                          Long categoryId,
                          String categoryName) {
@@ -29,6 +31,7 @@ public class GetProductDto {
         this.name = name;
         this.description = description;
         this.price = price;
+        this.picture = picture;
         this.status = status;
         this.categoryId = categoryId;
         this.categoryName = categoryName;

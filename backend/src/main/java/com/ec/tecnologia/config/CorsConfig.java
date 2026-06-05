@@ -1,4 +1,4 @@
-package com.ec.tecnologia.security;
+package com.ec.tecnologia.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

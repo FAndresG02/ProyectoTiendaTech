@@ -1,10 +1,7 @@
 package com.ec.tecnologia.service;
 
 import com.ec.tecnologia.config.TecConstants;
-import com.ec.tecnologia.dto.product.GetProductByCategory;
-import com.ec.tecnologia.dto.product.GetProductById;
-import com.ec.tecnologia.dto.product.GetProductDto;
-import com.ec.tecnologia.dto.product.ProductDto;
+import com.ec.tecnologia.dto.product.*;
 import com.ec.tecnologia.entity.CategoryEntity;
 import com.ec.tecnologia.entity.ProductEntity;
 import com.ec.tecnologia.repository.CategoryRepository;
@@ -13,16 +10,23 @@ import com.ec.tecnologia.security.JwtAuthenticationFilter;
 import com.ec.tecnologia.utils.TecUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -35,6 +39,9 @@ public class ProductService {
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Value("${server.url}")
+    private String serverUrl;
 
     //Metodo para agregar un producto
     public ResponseEntity<?> addProduct( ProductDto productDto){
@@ -61,6 +68,7 @@ public class ProductService {
                         newProductEntity.setDescription(productDto.getDescription());
                         newProductEntity.setPrice(productDto.getPrice());
                         newProductEntity.setStatus(true);
+                        newProductEntity.setPicture("defaultImage.png");
                         newProductEntity.setCategory(categoryEntity);
 
                         productRepository.save(newProductEntity);
@@ -98,7 +106,14 @@ public class ProductService {
 
             if (jwtAuthenticationFilter.isAdmin()){
 
-                return new ResponseEntity<>(productRepository.getAllProduct(), HttpStatus.OK);
+                List<GetProductDto> getProductDtos = productRepository.getAllProduct();
+
+                for(GetProductDto getProductDto : getProductDtos){
+
+                    getProductDto.setPicture(serverUrl + "/images/" + getProductDto.getPicture());
+                }
+
+                return new ResponseEntity<>(getProductDtos, HttpStatus.OK);
 
             }else{
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -133,7 +148,11 @@ public class ProductService {
 
         try {
 
-            return new ResponseEntity<>(productRepository.getProductById(id), HttpStatus.OK);
+            GetProductById getProductByIds = productRepository.getProductById(id);
+
+            getProductByIds.setPicture(serverUrl + "/images/" + getProductByIds.getPicture());
+
+            return new ResponseEntity<>(getProductByIds, HttpStatus.OK);
 
 
         }catch (Exception e){
@@ -180,20 +199,80 @@ public class ProductService {
            }else {
                return TecUtils.getResponseEntity(TecConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
            }
-
         }catch (RuntimeException e){
-
             log.error("Error de validación al actualizar producto", e);
             return TecUtils.getResponseEntity(
                     e.getMessage(),
                     HttpStatus.BAD_REQUEST);
-
         } catch (Exception e){
-
             log.error("Error al actualizar el producto", e);
             return TecUtils.getResponseEntity(
                     TecConstants.SOMETHING_WENT_WRONG,
                     HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Metodo para actualizar la imagen del producto
+    public ResponseEntity<?> updatePictureProduct(Long id, MultipartFile picture) {
+        try {
+            if (jwtAuthenticationFilter.isAdmin()) {
+
+                ProductEntity product = productRepository.findById(id).orElse(null);
+
+                if (product == null) {
+                    return new ResponseEntity<>("Producto no encontrado", HttpStatus.NOT_FOUND);
+                }
+
+                Path uploadDir = Paths.get("uploads/images");
+                Files.createDirectories(uploadDir);
+
+                String filename = UUID.randomUUID() + "_" + picture.getOriginalFilename();
+                Path path = uploadDir.resolve(filename);
+
+                Files.copy(
+                        picture.getInputStream(),
+                        path,
+                        StandardCopyOption.REPLACE_EXISTING
+                );
+
+                product.setPicture(filename);
+                productRepository.save(product);
+
+                return new ResponseEntity<>("Imagen actualizada correctamente", HttpStatus.OK);
+
+            } else {
+                return TecUtils.getResponseEntity(TecConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            log.error("Error al actualizar la imagen del producto", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<?> updateStatusProduct(UpdateStatusProductDto updateStatusProductDto){
+        try {
+
+            if (jwtAuthenticationFilter.isAdmin()) {
+
+                ProductEntity product = productRepository.findById(updateStatusProductDto.getId()).orElse(null);
+
+                if (product == null) {
+                    return new ResponseEntity<>("Producto no encontrado", HttpStatus.NOT_FOUND);
+                }
+
+                productRepository.updateStatusProduct(updateStatusProductDto.getStatus(),
+                        updateStatusProductDto.getId());
+
+                return TecUtils.getResponseEntity("Status del producto actualizado correctamente",
+                        HttpStatus.OK);
+
+            }else{
+                return TecUtils.getResponseEntity(TecConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+            }
+
+        }catch (Exception e){
+            log.error("Error al actualizar el status del producto", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -246,6 +325,48 @@ public class ProductService {
         }catch (Exception e){
             log.error("Error al eliminar el producto", e);
             return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Metodo para eliminar un imagen
+    public ResponseEntity<?> deletePictureProduct(@PathVariable Long id) {
+        try {
+
+            if (jwtAuthenticationFilter.isAdmin()){
+
+                //Buscamos el producto por id
+                ProductEntity productEntity = productRepository.findById(id).orElse(null);
+
+                //Si el producto no existe devuelve not found
+                if (productEntity == null){
+                    return new ResponseEntity<>("Producto no existe", HttpStatus.NOT_FOUND);
+                }
+
+                //Obtiene la imagen del producto
+                String picture = productEntity.getPicture();
+
+                //si la imagen no es nula o que no este vacio o que no tenga solo espacios
+                if(picture != null && !picture.isBlank()){
+                    //crea la url donde se encuentra la imgen para borrar por ejm uploads/images/(productEntity image)
+                    Path imagePath = Paths.get("uploads/images/" + picture);
+                    //Elimina la imagen en esa ruta
+                    Files.deleteIfExists(imagePath);
+                }
+
+                //Despues de eliminar setea la imagen por defecto
+                productEntity.setPicture("defaultImage.png");
+                //Guarda el productEntity
+                productRepository.save(productEntity);
+
+                return TecUtils.getResponseEntity("Imagen eliminado correctamente", HttpStatus.OK);
+            }else{
+                return TecUtils.getResponseEntity(TecConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+            }
+
+        } catch (Exception e) {
+            log.error("Error al eliminar la imagen del producto", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 }

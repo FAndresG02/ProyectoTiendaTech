@@ -1,18 +1,17 @@
 package com.ec.tecnologia.controller;
 
 import com.ec.tecnologia.config.TecConstants;
-import com.ec.tecnologia.dto.product.GetProductByCategory;
-import com.ec.tecnologia.dto.product.GetProductById;
-import com.ec.tecnologia.dto.product.GetProductDto;
-import com.ec.tecnologia.dto.product.ProductDto;
+import com.ec.tecnologia.dto.product.*;
 import com.ec.tecnologia.service.ProductService;
 import com.ec.tecnologia.utils.TecUtils;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +94,31 @@ public class ProductController {
 
     }
 
+    @PatchMapping(path = "/updatePictureProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?>  updatePictureProduct(@PathVariable Long id, @RequestPart MultipartFile picture){
+        try {
+
+            return productService.updatePictureProduct(id, picture);
+
+        }catch (Exception e){
+            log.error("Error al actualizar la imágen del producto", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @PatchMapping(path = "/updateStatusProduct")
+    public ResponseEntity<?> updateStatusProduct(@Valid @RequestBody UpdateStatusProductDto updateStatusProductDto){
+        try {
+
+            return productService.updateStatusProduct(updateStatusProductDto);
+
+        }catch (Exception e){
+            log.error("Error al actualizar el status del producto", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     //Metodo para eliminar el producto
     @DeleteMapping(path = "/deleteProduct/{id}")
     public ResponseEntity<?> deleteProduct(@Valid @PathVariable Long id){
@@ -106,6 +130,19 @@ public class ProductController {
         }catch (Exception e){
             log.error("Error al eliminar el producto", e);
             return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/deletePictureProduct/{id}")
+    public ResponseEntity<?> deletePictureProduct(@PathVariable Long id) {
+        try {
+
+            return productService.deletePictureProduct(id);
+
+        } catch (Exception e) {
+            log.error("Error al eliminar la imagen del producto", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 

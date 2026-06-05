@@ -17,9 +17,10 @@ public class ProductEntity {
     private String name;
     private String description;
     private Double price;
+    private String picture;
     private boolean status;
 
-    //Muechos ProductEntity pertenecen a una sola categoria (CategoryEntity)
+    //Muchos ProductEntity pertenecen a una sola categoria (CategoryEntity)
     @ManyToOne(fetch = FetchType.LAZY)
     //category_id apunta a category.id de la entidad
     @JoinColumn(name = "category_id")
