@@ -3,6 +3,7 @@ package com.ec.tecnologia.service;
 import com.ec.tecnologia.config.TecConstants;
 import com.ec.tecnologia.dto.review.AddReviewDto;
 import com.ec.tecnologia.dto.review.GetReviewsDto;
+import com.ec.tecnologia.dto.review.GetReviewsProductIdDto;
 import com.ec.tecnologia.dto.review.UpdateReviewDto;
 import com.ec.tecnologia.entity.ProductEntity;
 import com.ec.tecnologia.entity.ReviewEntity;
@@ -72,20 +73,24 @@ public class ReviewService {
 
     //----------------------------------------------------------------------------------------------------------------
 
-    public ResponseEntity<List<GetReviewsDto>> getReviews(){
+    public ResponseEntity<?> getReviewsByProduct(Long id){
 
         try {
 
-            return new ResponseEntity<>(reviewRepository.getAllReviews(), HttpStatus.OK);
+            List<GetReviewsDto> reviews = reviewRepository.getReviewsByProductId(id);
+            Double averageRating = reviewRepository.getAverageRatingByProductId(id);
+            Long totalReviews = reviewRepository.countReviewsByProductId(id);
+
+            return new ResponseEntity<>(new GetReviewsProductIdDto(averageRating, totalReviews, reviews), HttpStatus.OK);
 
         }catch (Exception e){
             log.error("Error al obtener las Reviews", e);
-            return new ResponseEntity<>(new ArrayList<>(),  HttpStatus.INTERNAL_SERVER_ERROR);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
-    public ResponseEntity<List<GetReviewsDto>> getReviewsById(@PathVariable Long id){
+    public ResponseEntity<List<GetReviewsDto>> getReviewsByUser(@PathVariable Long id){
 
         try {
 

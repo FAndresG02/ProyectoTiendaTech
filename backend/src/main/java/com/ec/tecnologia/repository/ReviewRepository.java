@@ -11,6 +11,20 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
 
     @Query("""
+    select avg(r.rating)
+    from ReviewEntity r
+    where r.product.id = :productId
+    """)
+    Double getAverageRatingByProductId(Long productId);
+
+    @Query("""
+    select count(r)
+    from ReviewEntity r
+    where r.product.id = :productId
+    """)
+    Long countReviewsByProductId(Long productId);
+
+    @Query("""
     select new com.ec.tecnologia.dto.review.GetReviewsDto(
         r.userName,
         r.comment,
@@ -18,8 +32,11 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
         r.createdAt
     )
     from ReviewEntity r
+    where r.product.id = :productId
     """)
-    List<GetReviewsDto> getAllReviews();
+    List<GetReviewsDto> getReviewsByProductId(
+            @Param("productId") Long productId
+    );
 
     @Query("""
     select new com.ec.tecnologia.dto.review.GetReviewsDto(
@@ -32,6 +49,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
     where r.user.id = :id
     """)
     List<GetReviewsDto> getAllReviewsById(@Param("id") Long id);
+
 
 
 }

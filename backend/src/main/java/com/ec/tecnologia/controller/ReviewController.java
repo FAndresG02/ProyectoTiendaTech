@@ -37,26 +37,26 @@ public class ReviewController {
         }
     }
 
-    @GetMapping(path = "/getReviews")
-    public ResponseEntity<List<GetReviewsDto>> getReviews(){
+    @GetMapping(path = "/getReviewsByProduct/{id}")
+    public ResponseEntity<?> getReviewsByProduct(@PathVariable Long id){
 
         try {
 
-            return reviewService.getReviews();
+            return reviewService.getReviewsByProduct(id);
 
         }catch (Exception e){
             log.error("Error al obtener las Reviews", e);
-            return new ResponseEntity<>(new ArrayList<>(),  HttpStatus.INTERNAL_SERVER_ERROR);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
-    @GetMapping(path = "/getReviewsById/{id}")
-    public ResponseEntity<List<GetReviewsDto>> getReviewsById(@PathVariable Long id){
+    @GetMapping(path = "/getReviewsByUser/{id}")
+    public ResponseEntity<List<GetReviewsDto>> getReviewsByUser(@PathVariable Long id){
 
         try {
 
-            return reviewService.getReviewsById(id);
+            return reviewService.getReviewsByUser(id);
 
         }catch (Exception e){
             log.error("Error al obtener las Reviews", e);
