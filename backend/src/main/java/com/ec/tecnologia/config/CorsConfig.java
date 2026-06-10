@@ -15,13 +15,13 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:4200")); // ✅ origen de Angular
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // ✅ incluye OPTIONS para preflight
-        config.setAllowedHeaders(List.of("*")); // ✅ permite Authorization y otros headers
+        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // ✅ aplica a todas las rutas
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 }
