@@ -12,5 +12,8 @@ public class TecConstants {
 
     public static final String UNAUTHORIZED_ACCESS = "Aceso no Authorizado";
 
+    //Ruta en donde se guardan los pdf
+    public static final String STORE_LOCATION = "/home/franklin/CarpetaPersonal/Documentos/tec-files";
+
 
 }
