@@ -18,5 +18,7 @@ public interface FacturaRepository extends JpaRepository<FacturaEntity, Long> {
     @Query("select f from FacturaEntity f where f.createBy=:username order by f.id desc")
     List<FacturaEntity> getAllFacturasUser(@Param("username") String username);
 
+    FacturaEntity findByUuid(String uuid);
+
 
 }

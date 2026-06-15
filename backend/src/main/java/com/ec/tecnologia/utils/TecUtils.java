@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +56,28 @@ public class TecUtils {
 
         // Retorna un HashMap vacío en caso de que el String sea nulo o vacío
         return new HashMap<>();
+    }
+
+    //Metodo para verificar si existe un archivo
+    public static Boolean ifFileExist(String path){
+        log.info("Inside isFileExist {}", path);
+        try {
+
+            //Crea un objeto File apuntando a esa ruta (pero no crea el archivo, solo la referencia).
+            File file = new File(path);
+
+            //Operador ternario
+            //file!= null verifica que file no sea nullo o vacio
+            //file.exists() verifica si existe el archivo
+            //devuelve true si se cumple y false si no se cumple
+            return (file!= null && file.exists()) ? Boolean.TRUE: Boolean.FALSE;
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 }

@@ -51,11 +51,11 @@ public class FacturaController {
     }
 
     //Metodo para obtener el pdf
-    @PostMapping(path = "/getPdf")
-    public ResponseEntity<byte[]> getPdf(@RequestBody Map<String, Object> requestMap){
+    @GetMapping(path = "/getPdf/{uuid}")
+    public ResponseEntity<byte[]> getPdf(@PathVariable String uuid){
         try {
 
-            return facturaService.getPdf(requestMap);
+            return facturaService.getPdf(uuid);
 
         }catch (Exception e){
             log.error("Error al obtener el pdf", e);
@@ -64,7 +64,7 @@ public class FacturaController {
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<String> deleteFactura(@PathVariable("id") Integer id){
+    public ResponseEntity<?> deleteFactura(@PathVariable Long id){
 
         try {
 
