@@ -8,6 +8,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+//Le indica a Spring que esta clase contiene configuración de la aplicación.
 @Configuration
 public class CorsConfig {
 
