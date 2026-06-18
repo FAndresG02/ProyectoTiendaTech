@@ -1,0 +1,131 @@
+.main-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top, rgba(13, 110, 253, 0.08), transparent 18%),
+        linear-gradient(180deg, #f8f9ff 0%, #eef3ff 100%);
+    padding: 1.5rem 0 2.5rem;
+}
+
+.carousel {
+    max-width: 1400px;
+    margin: 0 auto;
+
+    &-inner {
+        background: #0f172a;
+    }
+
+    &-item {
+        height: 520px;
+
+        img {
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &-caption {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg,
+                rgba(15, 23, 42, 0) 0%,
+                rgba(15, 23, 42, 0.82) 100%);
+        text-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.2);
+    }
+
+    &-indicators {
+        bottom: 1rem;
+        margin-bottom: 0;
+
+        button {
+            width: 0.8rem;
+            height: 0.8rem;
+            border-radius: 50%;
+            opacity: 0.45;
+            margin: 0 0.3rem;
+        }
+
+        .active {
+            opacity: 1;
+            background-color: #fff;
+        }
+    }
+
+    &-control-prev,
+    &-control-next {
+        width: 3.5rem;
+        height: 3.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        margin: 0 1rem;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 50%;
+        backdrop-filter: blur(4px);
+    }
+}
+
+.categories-section,
+.promo-banner,
+.products-section {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.category-card {
+    background: #fff;
+    border: 1px solid #eef2ff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.08);
+    }
+}
+
+.category-icon {
+    font-size: 1.5rem;
+}
+
+.promo-banner {
+    background: linear-gradient(90deg, #0f172a 0%, #1d4ed8 100%);
+    color: #fff;
+}
+
+.promo-tag {
+    background: rgba(255, 255, 255, 0.12);
+    color: #dbeafe;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+}
+
+.section-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.product-card {
+    background: #fff;
+    border: 1px solid #eef2ff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0.9rem 1.8rem rgba(15, 23, 42, 0.08);
+    }
+
+    img {
+        height: 220px;
+        width: 100%;
+        object-fit: cover;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .carousel {
+        &-item {
+            height: 420px;
+        }
+    }
+}
