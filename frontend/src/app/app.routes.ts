@@ -1,20 +1,20 @@
 import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
-import { Home } from './components/pages/home/home';
-import { MainLayout } from './components/common/layouts/main-layout/main-layout';
+import { Offer } from './components/pages/offer/offer';
+import { PublicLayout } from './components/common/layouts/public-layout/public-layout';
+import { MainPage } from './components/pages/main-page/main-page';
 
 export const routes: Routes = [
-    {path: '', component: Home},
 
     {
-        path: 'tech',
-        component: MainLayout,
-
-        children: [
-
-        ]
-    },
+    path: '',
+    component: PublicLayout,
+    children: [
+      { path: '', component: MainPage}, // Ruta principal
+      { path: 'ofertas', component: Offer },
+    ]
+  },
 
     // Ruta comodín para manejar rutas no encontradas (fallback)
-    { path: '**', component: Home },
+    { path: '**', component: MainPage },
 ];

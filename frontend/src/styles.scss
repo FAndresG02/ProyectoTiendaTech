@@ -1,1 +1,85 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+  background: #f5f7fb;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+// ─── Scrollbar personalizado ─────────────────────────────────────────────
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+  &:hover { background: #94a3b8; }
+}
+
+// ─── Override global mat-icon-button ────────────────────────────────────
+// Material 17+ genera botones de 48px por defecto, esto los normaliza
+.mat-mdc-icon-button.mat-mdc-button-base {
+  --mdc-icon-button-state-layer-size: 40px;
+  --mat-icon-button-state-layer-size: 40px;
+  width: var(--mat-icon-button-state-layer-size);
+  height: var(--mat-icon-button-state-layer-size);
+  padding: 8px;
+}
+
+// ─── Snackbar ────────────────────────────────────────────────────────────
+.snackbar-error {
+  --mdc-snackbar-container-color: #dc2626;
+  --mdc-snackbar-supporting-text-color: #fff;
+  --mat-snack-bar-button-color: rgba(255, 255, 255, 0.8);
+}
+
+.snackbar-success {
+  --mdc-snackbar-container-color: #16a34a;
+  --mdc-snackbar-supporting-text-color: #fff;
+  --mat-snack-bar-button-color: rgba(255, 255, 255, 0.8);
+}
+
+.snackbar-warning {
+  --mdc-snackbar-container-color: #d97706;
+  --mdc-snackbar-supporting-text-color: #fff;
+  --mat-snack-bar-button-color: rgba(255, 255, 255, 0.8);
+}
+
+.snackbar-info {
+  --mdc-snackbar-container-color: #2563eb;
+  --mdc-snackbar-supporting-text-color: #fff;
+  --mat-snack-bar-button-color: rgba(255, 255, 255, 0.8);
+}
+
+// ─── Dialog global ───────────────────────────────────────────────────────
+// Por si usas MatDialog en algún momento
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-shape: 16px;
+}
+
+// ─── Select / Autocomplete dropdown ─────────────────────────────────────
+.mat-mdc-select-panel,
+.mat-mdc-autocomplete-panel {
+  border-radius: 12px !important;
+}
+
+// ─── Ripple global más sutil ─────────────────────────────────────────────
+.mat-ripple-element {
+  opacity: 0.06 !important;
+}

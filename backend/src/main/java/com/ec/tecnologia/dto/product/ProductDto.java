@@ -28,6 +28,11 @@ public class ProductDto {
     )
     private Double price;
 
+    @NotNull(message = "El descuento no puede ser nulo")
+    @Min(value = 0, message = "El descuento no puede ser menor a 0")
+    @Max(value = 100, message = "El descuento no puede ser mayor a 100")
+    private Integer discountPercentage;
+
     @NotNull(message = "El id no puede ser nulo")
     @Positive(message = "El id debe ser mayor a 0")
     private Long categoryId;

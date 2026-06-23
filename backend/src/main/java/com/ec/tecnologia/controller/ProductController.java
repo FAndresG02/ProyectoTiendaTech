@@ -24,6 +24,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    //admin
     @PostMapping(path = "/addProduct")
     public ResponseEntity<?> addProduct(@Valid @RequestBody ProductDto productDto){
 
@@ -37,6 +38,7 @@ public class ProductController {
         }
     }
 
+    //admin/user
     //Metodo para obtner la lista de productos
     @GetMapping(path = "/getProducts")
     public ResponseEntity<List<GetProductDto>> getProducts() {
@@ -52,6 +54,7 @@ public class ProductController {
         }
     }
 
+    //admin/user
     //Metodo para obtener productos por categoria
     @GetMapping(path = "/getProductByCategory/{categoryId}")
     public ResponseEntity<List<GetProductByCategory>> getProductByCategory(@PathVariable Long categoryId) {
@@ -66,6 +69,7 @@ public class ProductController {
         }
     }
 
+    //admin/user
     //Metodo para obtener un producto por su id
     @GetMapping(path = "/getProductById/{id}")
     public ResponseEntity<GetProductById> getProductById(@PathVariable Long id) {
@@ -80,6 +84,7 @@ public class ProductController {
         }
     }
 
+    //admin
     @PutMapping(path = "/updateProduct/{id}")
     public ResponseEntity<?> updateProduct(@Valid @PathVariable Long id, @RequestBody ProductDto productDto){
 
@@ -94,6 +99,7 @@ public class ProductController {
 
     }
 
+    //admin
     @PatchMapping(path = "/updatePictureProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?>  updatePictureProduct(@PathVariable Long id, @RequestPart MultipartFile picture){
         try {
@@ -106,7 +112,7 @@ public class ProductController {
         }
     }
 
-
+    //admin
     @PatchMapping(path = "/updateStatusProduct")
     public ResponseEntity<?> updateStatusProduct(@Valid @RequestBody UpdateStatusProductDto updateStatusProductDto){
         try {
@@ -119,6 +125,33 @@ public class ProductController {
         }
     }
 
+    //admin
+    @PatchMapping(path = "/updateDiscount")
+    public ResponseEntity<?> updateDiscount(@Valid @RequestBody UpdateDiscountDto updateDiscountDto){
+        try {
+
+            return productService.updateDiscount(updateDiscountDto);
+
+        }catch (Exception e){
+            log.error("Error al actualizar el descuento del producto", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //admin
+    @PatchMapping(path = "/updateFeatured")
+    public ResponseEntity<?> updateFeatured(@Valid @RequestBody UpdateFeaturedDto updateFeaturedDto){
+        try {
+
+            return productService.updateFeatured(updateFeaturedDto);
+
+        }catch (Exception e){
+            log.error("Error al actualizar el status del producto", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //admin
     //Metodo para eliminar el producto
     @DeleteMapping(path = "/deleteProduct/{id}")
     public ResponseEntity<?> deleteProduct(@Valid @PathVariable Long id){
@@ -133,6 +166,7 @@ public class ProductController {
         }
     }
 
+    //admin
     @DeleteMapping("/deletePictureProduct/{id}")
     public ResponseEntity<?> deletePictureProduct(@PathVariable Long id) {
         try {
@@ -145,9 +179,5 @@ public class ProductController {
             );
         }
     }
-
-
-
-
 
 }

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 public class GetProductDto {
@@ -14,7 +16,10 @@ public class GetProductDto {
     private String description;
     private Double price;
     private String picture;
-    private boolean status;
+    private Boolean status;
+    private Integer discountPercentage;
+    private Boolean featured;
+    private LocalDateTime createdAt;
     private Long categoryId;
     private String categoryName;
 
@@ -24,7 +29,10 @@ public class GetProductDto {
                          String description,
                          Double price,
                          String picture,
-                         boolean status,
+                         Boolean status,
+                         Integer discountPercentage,
+                         Boolean featured,
+                         LocalDateTime createdAt,
                          Long categoryId,
                          String categoryName) {
         this.id = id;
@@ -33,6 +41,9 @@ public class GetProductDto {
         this.price = price;
         this.picture = picture;
         this.status = status;
+        this.discountPercentage = discountPercentage;
+        this.featured = featured;
+        this.createdAt = createdAt;
         this.categoryId = categoryId;
         this.categoryName = categoryName;
     }

@@ -45,9 +45,17 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/login",
+                        .requestMatchers(
+                                "/users/login",
                                 "/users/signup",
-                                "/users/forgotPassword")
+                                "/users/forgotPassword",
+
+                                "/images/**",
+
+                                // ─── Rutas públicas del ecommerce ───
+                                "/product/getProducts"        // ver todos los productos
+
+                        )
                         .permitAll()
                         .anyRequest()
                         .authenticated()

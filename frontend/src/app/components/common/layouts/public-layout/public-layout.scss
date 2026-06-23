@@ -1,0 +1,277 @@
+.home-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(255, 102, 0, 0.08), transparent 18%),
+    linear-gradient(180deg, #fff7ed 0%, #f4f7ff 100%);
+
+  // ─── Header ────────────────────────────────────────────
+  .home-header {
+    width: 100%;
+    // mat-toolbar tiene su propia sombra y z-index — la contenemos aquí
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .home-toolbar {
+    width: 100%;
+    min-height: 72px !important;
+    padding: 0.75rem 1.25rem !important;
+    background: #0046be !important;
+    color: #fff;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between;
+    gap: 0.9rem;
+    font-size: inherit !important;
+  }
+
+  .navbar-brand {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 0 0 auto;
+  }
+
+  .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+
+    &:hover,
+    &.active {
+      color: #fff;
+    }
+  }
+
+  // ─── Search — el más conflictivo con Material ───────────
+  .search-form {
+    flex: 1 1 420px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    max-width: 620px;
+    margin-left: auto;
+    min-width: 0;
+  }
+
+  .search-field {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    ::ng-deep {
+      .mat-mdc-form-field {
+        width: 100%;
+      }
+
+      // Oculta el label completamente para que no flote
+      .mdc-floating-label,
+      .mat-mdc-floating-label {
+        display: none !important;
+      }
+
+      .mat-mdc-form-field-subscript-wrapper {
+        display: none !important;
+      }
+
+      .mat-mdc-text-field-wrapper {
+        height: 44px !important;
+        border-radius: 999px !important;
+        padding: 0 1rem !important;
+        background: #f7f9ff !important;
+      }
+
+      .mat-mdc-form-field-infix {
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+        min-height: unset !important;
+      }
+
+      .mdc-notched-outline {
+        display: none !important;
+      }
+    }
+  }
+
+  .search-button {
+    height: 38px !important;
+    border-radius: 999px !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    color: #fff !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    // mat-stroked-button tiene padding propio
+    ::ng-deep .mat-mdc-button-touch-target {
+      display: none;
+    }
+  }
+
+  // ─── Actions ───────────────────────────────────────────
+  .toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    margin-left: 0.2rem;
+  }
+
+  .login-button {
+    height: 38px !important;
+    border-radius: 999px !important;
+    border-color: rgba(255, 255, 255, 0.45) !important;
+    color: #fff !important;
+    white-space: nowrap;
+  }
+
+  .register-button {
+    height: 38px !important;
+    border-radius: 999px !important;
+    background: linear-gradient(90deg, #ff6a00, #ff9f1c) !important;
+    color: #fff !important;
+    white-space: nowrap;
+  }
+
+  .cart-button {
+    color: #fff !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.4) !important;
+
+    // mat-icon-button tiene su propio tamaño
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  // ─── Footer (sin cambios funcionales) ──────────────────
+  .footer {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background: #0046be;
+    color: #fff;
+    padding: 4rem 1rem;
+    margin-top: 2rem;
+
+    &-bg-shapes {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    &-content {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    &-logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1rem;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      background: linear-gradient(135deg, #ff6a00, #fbbf24);
+      color: #111827;
+      border-radius: 16px;
+    }
+
+    &-name {
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    &-copy {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+
+      &-1 {
+        width: 180px;
+        height: 180px;
+        top: 2rem;
+        left: 8%;
+      }
+
+      &-2 {
+        width: 120px;
+        height: 120px;
+        bottom: 1rem;
+        right: 12%;
+      }
+
+      &-3 {
+        width: 90px;
+        height: 90px;
+        top: 50%;
+        right: 35%;
+      }
+    }
+  }
+}
+
+// ─── Responsive ──────────────────────────────────────────
+@media (max-width: 960px) {
+  .home-page {
+    .home-toolbar {
+      flex-wrap: wrap;
+      padding: 0.85rem 1rem !important;
+      gap: 0.6rem;
+    }
+
+    .search-form {
+      order: 3;
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+      flex-basis: 100%;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .home-page {
+    .search-form {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .search-field {
+      width: 100%;
+    }
+
+    .search-button {
+      width: 100%;
+    }
+
+    .toolbar-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .nav-links {
+      display: none;
+    }
+  }
+}

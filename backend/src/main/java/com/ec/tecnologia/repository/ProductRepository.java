@@ -28,6 +28,9 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
             "p.price, " +
             "p.picture," +
             "p.status, " +
+            "p.discountPercentage, " +
+            "p.featured, " +
+            "p.createdAt, " +
             "p.category.id, " +
             "p.category.name)" +
             "from ProductEntity p")
@@ -58,6 +61,19 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     @Query("update ProductEntity u set u.status = :status where u.id = :id")
     int updateStatusProduct(@Param("status") Boolean status,
                      @Param("id") Long id);
+
+    //Actualizar descuento
+    @Transactional
+    @Modifying
+    @Query("update ProductEntity u set u.discountPercentage = :discountPercentage where u.id = :id")
+    int updateDiscountPercentage(@Param("discountPercentage") Integer discountPercentage,
+                            @Param("id") Long id);
+
+    @Transactional
+    @Modifying
+    @Query("update ProductEntity u set u.featured = :featured where u.id = :id")
+    int updateFeatured(@Param("featured") Boolean featured,
+                                 @Param("id") Long id);
 
 
 }

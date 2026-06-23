@@ -8,6 +8,7 @@ import com.ec.tecnologia.repository.CategoryRepository;
 import com.ec.tecnologia.repository.ProductRepository;
 import com.ec.tecnologia.security.JwtAuthenticationFilter;
 import com.ec.tecnologia.utils.TecUtils;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +71,9 @@ public class ProductService {
                         newProductEntity.setPrice(productDto.getPrice());
                         newProductEntity.setStatus(true);
                         newProductEntity.setPicture("defaultImage.png");
+                        newProductEntity.setDiscountPercentage(productDto.getDiscountPercentage());
+                        newProductEntity.setFeatured(false);
+                        newProductEntity.setCreatedAt(LocalDateTime.now());
                         newProductEntity.setCategory(categoryEntity);
 
                         productRepository.save(newProductEntity);
@@ -103,8 +109,6 @@ public class ProductService {
 
         try {
 
-            if (jwtAuthenticationFilter.isAdmin()){
-
                 List<GetProductDto> getProductDtos = productRepository.getAllProduct();
 
                 for(GetProductDto getProductDto : getProductDtos){
@@ -114,9 +118,6 @@ public class ProductService {
 
                 return new ResponseEntity<>(getProductDtos, HttpStatus.OK);
 
-            }else{
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
 
         }catch (Exception e){
             log.error("Error al obtener los productos", e);
@@ -129,12 +130,7 @@ public class ProductService {
 
         try {
 
-            if (jwtAuthenticationFilter.isAdmin()){
-
-                return new ResponseEntity<>(productRepository.getProductsByCategory(categoryId), HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
+            return new ResponseEntity<>(productRepository.getProductsByCategory(categoryId), HttpStatus.OK);
 
         }catch (Exception e){
             log.error("Error al obtener los productos por categoria", e);
@@ -248,6 +244,7 @@ public class ProductService {
         }
     }
 
+    //Metodo para actualizar el status del product
     public ResponseEntity<?> updateStatusProduct(UpdateStatusProductDto updateStatusProductDto){
         try {
 
@@ -275,6 +272,59 @@ public class ProductService {
         }
     }
 
+    public ResponseEntity<?> updateDiscount(UpdateDiscountDto updateDiscountDto){
+        try {
+
+            if (jwtAuthenticationFilter.isAdmin()){
+
+                ProductEntity productEntity = productRepository.findById(updateDiscountDto.getId()).orElse(null);
+
+                if (productEntity == null){
+                    return TecUtils.getResponseEntity("El producto no existe", HttpStatus.NOT_FOUND);
+                }
+
+                productRepository.updateDiscountPercentage(updateDiscountDto.getDiscountPercentage(),
+                        updateDiscountDto.getId());
+
+                return TecUtils.getResponseEntity("Descuento del producto actualizado correctamente",
+                        HttpStatus.OK);
+
+            }else{
+                return TecUtils.getResponseEntity(TecConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+            }
+
+        }catch (Exception e){
+            log.error("Error al actualizar el descuento del producto", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<?> updateFeatured(UpdateFeaturedDto updateFeaturedDto){
+        try {
+
+            if (jwtAuthenticationFilter.isAdmin()){
+
+                ProductEntity productEntity = productRepository.findById(updateFeaturedDto.getId()).orElse(null);
+
+                if (productEntity == null){
+                    return TecUtils.getResponseEntity("El producto no existe", HttpStatus.NOT_FOUND);
+                }
+
+                productRepository.updateFeatured(updateFeaturedDto.getFeatured(), updateFeaturedDto.getId());
+
+                return TecUtils.getResponseEntity("Producto destacado actualizado correctamente",
+                        HttpStatus.OK);
+            }else{
+                return TecUtils.getResponseEntity(TecConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+            }
+
+        }catch (Exception e){
+            log.error("Error al actualizar el status del producto", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Metodo para validar el producto
     private ProductEntity validateProduct(Long id, ProductDto productDto){
 
         ProductEntity productEntity = productRepository.findById(id)
