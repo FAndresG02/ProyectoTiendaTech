@@ -12,10 +12,10 @@
         </div>
       </div>
 
-      <button mat-icon-button class="slider-control prev" type="button" aria-label="Anterior">
+      <button class="slider-control prev" mat-icon-button type="button" aria-label="Anterior">
         <mat-icon>chevron_left</mat-icon>
       </button>
-      <button mat-icon-button class="slider-control next" type="button" aria-label="Siguiente">
+      <button class="slider-control next" mat-icon-button type="button" aria-label="Siguiente">
         <mat-icon>chevron_right</mat-icon>
       </button>
 
@@ -66,14 +66,14 @@
     </div>
 
     <div class="promo-banner">
-
       <div>
         <span class="promo-tag">Oferta del día</span>
         <h3>Smartphones con hasta 30% de descuento</h3>
         <p>Aprovecha los mejores precios en tecnología líder.</p>
       </div>
-      <button mat-flat-button class="promo-button" type="button">Ver ofertas</button>
-
+      <button class="promo-button" mat-flat-button type="button" routerLink="/ofertas">
+        Ver ofertas
+      </button>
     </div>
 
     <div class="products-section">
@@ -86,9 +86,14 @@
 
       <div class="products-grid">
 
-        @for (product of dataSource; track product.id) {
+        @for (product of dataProducts; track product.id) {
+
+        @if (product.featured) {
 
         <mat-card class="product-card" appearance="outlined">
+
+          <span class="badge-discount">-{{ product.discountPercentage }}%</span>
+          <span class="badge-featured">Destacado</span>
 
           <img mat-card-image [src]="product.picture" [alt]="product.name" />
 
@@ -97,14 +102,22 @@
             <h6>{{ product.name }}</h6>
             <p>{{ product.description }}</p>
             <div class="product-footer">
-              <strong>{{ product.price | currency:'USD' }}</strong>
-              <button mat-flat-button color="primary" class="add-button" type="button">
-                Agregar
-              </button>
+              <div class="price-wrap">
+                @if (product.discountPercentage > 0) {
+                <span class="price-original">{{ product.price | currency:'USD' }}</span>
+                <span class="price-final">{{ product.price * (1 - product.discountPercentage / 100) | currency:'USD'
+                  }}</span>
+                } @else {
+                <span class="price-final">{{ product.price | currency:'USD' }}</span>
+                }
+              </div>
+              <button mat-flat-button class="add-button" type="button">Agregar</button>
             </div>
           </mat-card-content>
 
         </mat-card>
+
+        }
 
         } @empty {
         <p class="empty-state">No hay productos disponibles.</p>

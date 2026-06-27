@@ -53,7 +53,11 @@ public class SecurityConfig {
                                 "/images/**",
 
                                 // ─── Rutas públicas del ecommerce ───
-                                "/product/getProducts"        // ver todos los productos
+                                "/product/getProducts",
+                                "/product/getProductByCategory/{categoryId}",
+
+                                "/category/getCategories"
+
 
                         )
                         .permitAll()

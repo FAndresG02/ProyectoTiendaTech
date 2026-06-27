@@ -1,1 +1,76 @@
-<p>offer works!</p>
+<div class="offers-page">
+    <div class="shell">
+
+
+        <div class="categories">
+
+            <h2>Categorías</h2>
+
+            <mat-selection-list #categorys (selectionChange)="filterByCategory(categorys.selectedOptions.selected)">
+                @for (category of this.categories; track category.id) {
+                <mat-list-option [value]="category.id">{{category.name}}</mat-list-option>
+                }
+            </mat-selection-list>
+
+        </div>
+
+
+
+        <div class="offers-content">
+            <!-- Filtro -->
+            <div class="filters-bar">
+
+                <div class="sort-wrap">
+
+                    <h1 class="page-title">Ofertas</h1>
+                    <p class="page-sub">Los mejores precios en tecnología</p>
+
+
+                    <select (change)="sortBy($event)">
+                        <option value="default">Ordenar por</option>
+                        <option value="price-asc">Menor precio</option>
+                        <option value="price-desc">Mayor precio</option>
+                        <option value="discount">Mayor descuento</option>
+                    </select>
+                </div>
+            </div>
+
+            <span class="results-count">{{ filteredProducts.length }} productos encontrados</span>
+
+            <!-- Grid -->
+            <div class="products-grid">
+
+                @for (product of this.filteredProducts; track product.id) {
+
+                <mat-card class="product-card" appearance="outlined">
+                    <span class="badge-discount">-{{ product.discountPercentage }}%</span>
+                    @if (product.featured) {
+                    <span class="badge-featured">Destacado</span>
+                    }
+                    <img mat-card-image [src]="product.picture" [alt]="product.name" />
+                    <mat-card-content>
+                        <span class="product-tag">{{ product.categoryName }}</span>
+                        <h6>{{ product.name }}</h6>
+                        <p>{{ product.description }}</p>
+                        <div class="product-footer">
+                            <div class="price-wrap">
+                                <span class="price-original">{{ product.price | currency:'USD' }}</span>
+                                <span class="price-final">{{ product.price * (1 - product.discountPercentage / 100) |
+                                    currency:'USD' }}</span>
+                            </div>
+                            <button class="add-button" mat-flat-button type="button">Agregar</button>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+
+                } @empty {
+                <p class="empty-state">No hay productos en esta categoría.</p>
+                }
+            </div>
+        </div>
+
+        <div>
+
+        </div>
+    </div>
+</div>

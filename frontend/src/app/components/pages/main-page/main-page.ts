@@ -1,24 +1,25 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { ProductService } from '../../../core/services/product-service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { MatDialog } from '@angular/material/dialog';
-import { SnackbarService } from '../../../core/services/snackbar-service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
+import { ProductService } from '../../../core/services/product-service';
+import { SnackbarService } from '../../../core/services/snackbar-service';
+import { MATERIAL_IMPORTS } from '../../../shared/material.imports';
 
 @Component({
   selector: 'app-main-page',
-  imports: [MatButtonModule, MatCardModule, MatIconModule, MatTableModule, CurrencyPipe],
+  imports: [
+    ...MATERIAL_IMPORTS,
+    CurrencyPipe,
+    RouterLink,
+  ],
   templateUrl: './main-page.html',
   styleUrl: './main-page.scss',
 })
 export class MainPage implements OnInit {
 
-  dataSource: any[] = [];
+  dataProducts: any[] = [];
   responseMessage: any;
 
   constructor(
@@ -47,10 +48,11 @@ export class MainPage implements OnInit {
     this.productService.getProducts().subscribe((response: any) => {
 
       this.ngxService.stop();
-      this.dataSource = response;
+      this.dataProducts = response;
       //Marca el componente para revisión en el próximo ciclo 
       this.cdr.markForCheck();
       console.log(response);
+
     }, (error: any) => {
       this.ngxService.stop();
       console.log(error?.message);

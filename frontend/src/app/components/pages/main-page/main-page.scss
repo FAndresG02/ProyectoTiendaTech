@@ -1,5 +1,3 @@
-// ─── Reset de Angular Material ───────────────────────────
-// mat-card aplica padding y sombra por defecto — los anulamos aquí
 mat-card.category-card,
 mat-card.product-card {
   --mdc-elevated-card-container-elevation: none;
@@ -7,295 +5,332 @@ mat-card.product-card {
   box-shadow: none !important;
 }
 
-// ─── Layout general ──────────────────────────────────────
 .main-page {
   min-height: 100vh;
   background: linear-gradient(180deg, #f8f9ff 0%, #eef3ff 100%);
   padding: 1.5rem 0 2.5rem;
-}
 
-.page-shell {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem; // ← KEY: gap reemplaza los margin-top individuales
-}
-
-// ─── Hero Slider ─────────────────────────────────────────
-.hero-slider {
-  position: relative;
-  overflow: hidden;
-  border-radius: 1.25rem;
-  background: #0f172a;
-  box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.18);
-}
-
-.hero-slide {
-  position: relative;
-  height: 520px;
-  display: none;
-
-  &.active { display: block; }
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block; // ← elimina el espacio fantasma debajo de img
-  }
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0; // ← shorthand de top/right/bottom/left: 0
-  padding: 2rem;
-  background: linear-gradient(180deg, transparent 30%, rgba(15, 23, 42, 0.82) 100%);
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-
-  h5 {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin: 0 0 0.4rem;
-  }
-
-  p {
-    margin: 0;
-    color: rgba(255, 255, 255, 0.9);
-  }
-}
-
-.slider-control {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  // Angular Material MDC buttons tienen padding propio — reset:
-  min-width: unset !important;
-  padding: 0 !important;
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.15) !important;
-  color: #fff !important;
-  backdrop-filter: blur(4px);
-  z-index: 2;
-
-  &.prev { left: 1rem; }
-  &.next { right: 1rem; }
-}
-
-.slider-dots {
-  position: absolute;
-  left: 50%;
-  bottom: 1rem;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 0.5rem;
-  z-index: 2;
-}
-
-.slider-dot {
-  width: 8px;
-  height: 8px;
-  border: none;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.4);
-  cursor: pointer;
-  padding: 0;
-
-  &.active { background: #fff; }
-}
-
-// ─── Categorías ───────────────────────────────────────────
-.categories-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.category-card {
-  border: 1px solid #eef2ff !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08) !important;
-  }
-
-  // mat-card-content tiene padding 16px por defecto — override:
-  mat-card-content {
+  .page-shell {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 1.25rem 1rem !important; // !important por especificidad MDC
+    gap: 1.25rem;
+
+    .hero-slider {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1.25rem;
+      background: #0f172a;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.18);
+
+      .hero-slide {
+        position: relative;
+        height: 520px;
+        display: none;
+
+        &.active {
+          display: block;
+        }
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
+        .hero-overlay {
+          position: absolute;
+          inset: 0;
+          padding: 2rem;
+          background: linear-gradient(180deg, transparent 30%, rgba(15, 23, 42, 0.82) 100%);
+          color: #fff;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+
+          h5 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 0 0 0.4rem;
+          }
+
+          p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.9);
+          }
+        }
+
+        .slider-control {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          min-width: unset !important;
+          padding: 0 !important;
+          width: 40px;
+          height: 40px;
+          background: rgba(255, 255, 255, 0.15) !important;
+          color: #fff !important;
+          backdrop-filter: blur(4px);
+          z-index: 2;
+
+          &.prev {
+            left: 1rem;
+          }
+
+          &.next {
+            right: 1rem;
+          }
+        }
+
+        .slider-dots {
+          position: absolute;
+          left: 50%;
+          bottom: 1rem;
+          transform: translateX(-50%);
+          display: flex;
+          gap: 0.5rem;
+          z-index: 2;
+
+          .slider-dot {
+            width: 8px;
+            height: 8px;
+            border: none;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            padding: 0;
+
+            &.active {
+              background: #fff;
+            }
+          }
+        }
+      }
+    }
+
+    .categories-section {
+
+      .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+
+        .category-card {
+          border: 1px solid #eef2ff !important;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          cursor: pointer;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08) !important;
+          }
+
+          // mat-card-content tiene padding 16px por defecto — override:
+          mat-card-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 1.25rem 1rem !important; // !important por especificidad MDC
+          }
+
+          .category-icon {
+            font-size: 1.6rem;
+          }
+
+          h6 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #0f172a;
+          }
+
+          small {
+            color: #64748b;
+            font-size: 0.8rem;
+          }
+        }
+      }
+
+    }
+
+    .promo-banner {
+      background: linear-gradient(90deg, #0f172a 0%, #1d4ed8 100%);
+      color: #fff;
+      border-radius: 1.25rem;
+      padding: 3.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+
+      .promo-tag {
+        background: rgba(255, 255, 255, 0.12);
+        color: #dbeafe;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+      }
+
+      h3 {
+        font-size: 1.6rem;
+        margin: 0.4rem 0 0.25rem;
+      }
+
+      p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+      }
+
+      .promo-button {
+        background: #fff !important;
+        color: #0f172a !important;
+        border-radius: 999px !important;
+        white-space: nowrap;
+      }
+    }
+
+
+    .products-section {
+
+      .products-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+
+        .section-title {
+          font-size: 1.3rem;
+          font-weight: 700;
+          color: #0f172a;
+          margin: 0;
+        }
+
+        a {
+          color: #2563eb;
+          font-weight: 600;
+          font-size: 0.9rem;
+          text-decoration: none;
+        }
+      }
+
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+
+        .product-card {
+          border: 1px solid #eef2ff !important;
+          overflow: hidden;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+          &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08) !important;
+          }
+
+          img[mat-card-image] {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            display: block;
+            margin: 0 !important; // anula el margin negativo de MDC
+          }
+
+          mat-card-content {
+            padding: 1rem !important;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+
+            .product-tag {
+              display: inline-block;
+              background: #f1f5f9;
+              color: #475569;
+              padding: 0.2rem 0.6rem;
+              border-radius: 999px;
+              font-size: 0.72rem;
+              font-weight: 600;
+              align-self: flex-start;
+            }
+
+            h6 {
+              margin: 0;
+              font-size: 0.95rem;
+              font-weight: 700;
+              color: #0f172a;
+            }
+
+            p {
+              margin: 0;
+              color: #64748b;
+              font-size: 0.85rem;
+            }
+
+            .product-footer {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: 0.5rem;
+              margin-top: 0.4rem;
+
+              .price-wrap {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+
+                .price-original {
+                  text-decoration: line-through;
+                  color: #9ca3af;
+                  font-size: 0.85rem;
+                }
+
+                .price-final {
+                  font-weight: 700;
+                  color: #0f172a;
+                  font-size: 1rem;
+                }
+              }
+
+              .add-button {
+                border-radius: 999px !important;
+                line-height: 1 !important;
+                padding: 0.4rem 1rem !important;
+              }
+            }
+          }
+        }
+      }
+    }
   }
-
-  .category-icon { font-size: 1.6rem; }
-
-  h6 {
-    margin: 0;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #0f172a;
-  }
-
-  small { color: #64748b; font-size: 0.8rem; }
 }
 
-// ─── Banner Promo ─────────────────────────────────────────
-.promo-banner {
-  background: linear-gradient(90deg, #0f172a 0%, #1d4ed8 100%);
-  color: #fff;
-  border-radius: 1.25rem;
-  padding: 3.5rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-
-  h3 {
-    font-size: 1.6rem;
-    margin: 0.4rem 0 0.25rem;
-  }
-
-  p {
-    margin: 0;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-  }
-}
-
-.promo-tag {
-  background: rgba(255, 255, 255, 0.12);
-  color: #dbeafe;
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-}
-
-.promo-button {
-  // mat-flat-button tiene sus propios estilos MDC — override limpio:
-  background: #fff !important;
-  color: #0f172a !important;
-  border-radius: 999px !important;
-  white-space: nowrap;
-}
-
-// ─── Productos ────────────────────────────────────────────
-.products-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  a {
-    color: #2563eb;
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-decoration: none;
-  }
-}
-
-.section-title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0;
-}
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.product-card {
-  border: 1px solid #eef2ff !important;
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08) !important;
-  }
-
-  // mat-card-image tiene margen negativo por defecto en MDC — reset:
-  img[mat-card-image] {
-    height: 200px;
-    width: 100%;
-    object-fit: cover;
-    display: block;
-    margin: 0 !important; // anula el margin negativo de MDC
-  }
-
-  mat-card-content {
-    padding: 1rem !important;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-  }
-
-  h6 {
-    margin: 0;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #0f172a;
-  }
-
-  p {
-    margin: 0;
-    color: #64748b;
-    font-size: 0.85rem;
-  }
-}
-
-.product-tag {
-  display: inline-block;
-  background: #f1f5f9;
-  color: #475569;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  align-self: flex-start;
-}
-
-.product-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-top: 0.4rem;
-
-  strong {
-    font-size: 1.05rem;
-    color: #0f172a;
-  }
-}
-
-.add-button {
-  border-radius: 999px !important;
-  line-height: 1 !important;
-  padding: 0.4rem 1rem !important;
-}
 
 // ─── Responsive ───────────────────────────────────────────
 @media (max-width: 980px) {
+
   .categories-grid,
   .products-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .hero-slide { height: 380px; }
+  .hero-slide {
+    height: 380px;
+  }
 }
 
 @media (max-width: 640px) {
-  .page-shell { padding: 0 0.75rem; }
-  .hero-slide { height: 280px; }
+  .page-shell {
+    padding: 0 0.75rem;
+  }
+
+  .hero-slide {
+    height: 280px;
+  }
 
   .categories-grid,
   .products-grid {
