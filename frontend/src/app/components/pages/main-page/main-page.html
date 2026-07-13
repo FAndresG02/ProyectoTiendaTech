@@ -84,44 +84,96 @@
       </div>
 
 
-      <div class="products-grid">
+      <div class="carousel-wrapper">
 
-        @for (product of dataProducts; track product.id) {
+        <button class="carousel-control prev" mat-icon-button type="button" aria-label="Anterior"
+          (click)="scrollCarousel(-1)">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
 
-        @if (product.featured) {
+        <div class="products-grid" #productsGrid>
 
-        <mat-card class="product-card" appearance="outlined">
+          @for (product of dataProducts; track product.id) {
 
-          <span class="badge-discount">-{{ product.discountPercentage }}%</span>
-          <span class="badge-featured">Destacado</span>
+          @if (product.featured && product.status) {
 
-          <img mat-card-image [src]="product.picture" [alt]="product.name" />
+          <mat-card class="product-card" appearance="outlined">
 
-          <mat-card-content>
-            <span class="product-tag">{{ product.categoryName }}</span>
-            <h6>{{ product.name }}</h6>
-            <p>{{ product.description }}</p>
-            <div class="product-footer">
-              <div class="price-wrap">
-                @if (product.discountPercentage > 0) {
-                <span class="price-original">{{ product.price | currency:'USD' }}</span>
-                <span class="price-final">{{ product.price * (1 - product.discountPercentage / 100) | currency:'USD'
-                  }}</span>
-                } @else {
-                <span class="price-final">{{ product.price | currency:'USD' }}</span>
-                }
+            <span class="badge-discount">-{{ product.discountPercentage }}%</span>
+            <span class="badge-featured">Destacado</span>
+
+            <img mat-card-image [src]="product.picture" [alt]="product.name" />
+
+            <mat-card-content>
+              <span class="product-tag">{{ product.categoryName }}</span>
+              <h6>{{ product.name }}</h6>
+              <p>{{ product.description }}</p>
+              <div class="product-footer">
+                <div class="price-wrap">
+                  @if (product.discountPercentage > 0) {
+                  <span class="price-original">{{ product.price | currency:'USD' }}</span>
+                  <span class="price-final">{{ product.price * (1 - product.discountPercentage / 100) | currency:'USD'
+                    }}</span>
+                  } @else {
+                  <span class="price-final">{{ product.price | currency:'USD' }}</span>
+                  }
+                </div>
+                <button class="add-button" mat-flat-button type="button">Agregar</button>
               </div>
-              <button mat-flat-button class="add-button" type="button">Agregar</button>
-            </div>
-          </mat-card-content>
+            </mat-card-content>
 
-        </mat-card>
+          </mat-card>
 
-        }
+          }
 
-        } @empty {
-        <p class="empty-state">No hay productos disponibles.</p>
-        }
+          } @empty {
+          <p class="empty-state">No hay productos disponibles.</p>
+          }
+
+        </div>
+
+        <button class="carousel-control next" mat-icon-button type="button" aria-label="Siguiente"
+          (click)="scrollCarousel(1)">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="why-section">
+
+      <div class="why-heading">
+        <h2>Razones para comprar en <span>Nuestra tienda</span></h2>
+        <p>Nuestro objetivo es hacer que tu experiencia de compra sea perfecta. Compra directamente y disfruta
+          ventajas</p>
+      </div>
+
+      <div class="why-cards">
+
+        <div class="why-card">
+          <mat-icon class="why-icon">local_shipping</mat-icon>
+          <h6>Envío gratuito</h6>
+          <p>Disfruta el envío estándar gratuito en todos los pedidos mayores a $200.00</p>
+        </div>
+
+        <div class="why-card">
+          <mat-icon class="why-icon">verified_user</mat-icon>
+          <h6>Garantía directa</h6>
+          <p>Garantía total contra defectos de fabricación para tu máxima tranquilidad.</p>
+        </div>
+
+        <div class="why-card">
+          <mat-icon class="why-icon">assignment_return</mat-icon>
+          <h6>Devolución fácil</h6>
+          <p>Garantía de satisfacción: Disfruta de 30 días para devoluciones</p>
+        </div>
+
+        <div class="why-card">
+          <mat-icon class="why-icon">headset_mic</mat-icon>
+          <h6>Soporte técnico</h6>
+          <p>Soluciones rápidas y expertas para que tu tecnología nunca se detenga.</p>
+        </div>
 
       </div>
 

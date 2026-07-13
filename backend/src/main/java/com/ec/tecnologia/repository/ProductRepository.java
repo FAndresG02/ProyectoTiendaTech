@@ -1,7 +1,7 @@
 package com.ec.tecnologia.repository;
 
-import com.ec.tecnologia.dto.product.GetProductByCategory;
-import com.ec.tecnologia.dto.product.GetProductById;
+import com.ec.tecnologia.dto.product.GetProductByCategoryDto;
+import com.ec.tecnologia.dto.product.GetProductByIdDto;
 import com.ec.tecnologia.dto.product.GetProductDto;
 import com.ec.tecnologia.entity.ProductEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,15 +22,14 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     boolean existsByNameIgnoreCase(String name);
 
-    @Query("select new com.ec.tecnologia.dto.product.GetProductDto(p.id, " +
+    @Query("select new com.ec.tecnologia.dto.product.GetProductDto(" +
+            "p.id, " +
             "p.name, " +
             "p.description, " +
             "p.price, " +
-            "p.picture," +
             "p.status, " +
             "p.discountPercentage, " +
             "p.featured, " +
-            "p.createdAt, " +
             "p.category.id, " +
             "p.category.name)" +
             "from ProductEntity p")
@@ -42,18 +41,17 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
             "p.name) " +
             "from ProductEntity p " +
             "where p.category.id = :categoryId and p.status = true")
-    List<GetProductByCategory> getProductsByCategory(@Param("categoryId") Long categoryId);
+    List<GetProductByCategoryDto> getProductsByCategory(@Param("categoryId") Long categoryId);
 
 
-    @Query("select new com.ec.tecnologia.dto.product.GetProductById(" +
+    @Query("select new com.ec.tecnologia.dto.product.GetProductByIdDto(" +
             "p.id, " +
             "p.name, " +
             "p.description, " +
-            "p.price, " +
-            "p.picture) " +
+            "p.price) " +
             "from ProductEntity p " +
-            "where p.id= :id")
-    GetProductById getProductById(@Param("id") Long id);
+            "where p.id = :id")
+    GetProductByIdDto getProductById(@Param("id") Long id);
 
     //Actualizar status
     @Transactional

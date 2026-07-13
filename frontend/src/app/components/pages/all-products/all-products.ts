@@ -1,32 +1,30 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MATERIAL_IMPORTS } from '../../../shared/material.imports';
+import { COMMON_IMPORTS } from '../../../shared/common.imports';
+import { GetProduct } from '../../../interface/product/get-product';
+import { GetCategory } from '../../../interface/category/get-category';
 import { ProductService } from '../../../core/services/product-service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { GlobalConstants } from '../../../shared/global-constants';
 import { SnackbarService } from '../../../core/services/snackbar-service';
-import { CurrencyPipe } from '@angular/common';
-import { GetProduct } from '../../../interface/product/get-product';
-import { COMMON_IMPORTS } from '../../../shared/shared';
 import { CategoryService } from '../../../core/services/category-service';
-import { GetCategory } from '../../../interface/category/get-category';
+import { GlobalConstants } from '../../../shared/global-constants';
 import { MatListOption } from '@angular/material/list';
 
 @Component({
-  selector: 'app-offer',
+  selector: 'app-all-products',
   imports: [
     ...MATERIAL_IMPORTS,
-    ...COMMON_IMPORTS,
-    CurrencyPipe,
+    ...COMMON_IMPORTS
   ],
-  templateUrl: './offer.html',
-  styleUrl: './offer.scss',
+  templateUrl: './all-products.html',
+  styleUrl: './all-products.scss',
 })
-export class Offer implements OnInit {
+export class AllProducts implements OnInit {
 
   @ViewChild('productsGrid', { static: false }) productsGrid!: ElementRef<HTMLElement>;
 
   products: GetProduct[] = [];
-  filteredProducts: GetProduct[] = [];
+  allProducts: GetProduct[] = [];
   responseMessage: any;
   categories: GetCategory[] = [];
 
@@ -39,6 +37,7 @@ export class Offer implements OnInit {
     private snackbarService: SnackbarService,
     private categoryService: CategoryService
   ) { }
+
 
   ngOnInit(): void {
     this.ngxService.start();
@@ -58,13 +57,10 @@ export class Offer implements OnInit {
     this.productService.getProducts().subscribe((response: GetProduct[]) => {
       this.ngxService.stop();
 
-      //asigna los productos con descuento a la variable products
-      this.products = response.filter(product =>
-        product.discountPercentage > 0 && product.status === true
-      );
-
-      // Inicializa filteredProducts y le asiga los productos con descuento
-      this.filteredProducts = [...this.products];
+      // Filtra los productos activos (status === true) y los asigna a la variable products
+      this.products = response.filter(product => product.status === true);
+      //asigna todos los productos a la variable allProducts
+      this.allProducts = [...this.products];
 
       this.cdr.markForCheck();
     }, (error: any) => {
@@ -102,25 +98,27 @@ export class Offer implements OnInit {
   }
 
   filterByCategory(selected: MatListOption[]) {
+    // Extrae los IDs de las categorías seleccionadas
     const selectedIds = selected.map(option => option.value as number);
 
+    // Verifica si no hay ninguna categoría seleccionada
     if (selectedIds.length === 0) {
-      // Si no hay nada seleccionado, muestra todos
-      this.filteredProducts = [...this.products];
+      // Restaura todos los productos (copia del mismo array)
+      this.allProducts = [...this.products];
     } else {
-      this.filteredProducts = this.products.filter(product =>
+      // Filtra y muestra solo los productos cuya categoría esté seleccionada
+      this.allProducts = this.products.filter(product =>
         selectedIds.includes(product.categoryId)
       );
     }
   }
-
 
   sortBy(event: any) {
     // Obtiene el valor seleccionado del evento de cambio
     const val = event.target.value;
 
     // Copiamos la lista para no modificar la original directamente
-    let list = [...this.filteredProducts];
+    let list = [...this.allProducts];
 
     if (val === 'price-asc') {
       list.sort((a, b) => {
@@ -142,7 +140,6 @@ export class Offer implements OnInit {
         return b.discountPercentage - a.discountPercentage;
       });
     }
-    this.filteredProducts = list;
+    this.allProducts = list;
   }
-
 }

@@ -19,8 +19,8 @@
 
                 <div class="sort-wrap">
 
-                    <h1 class="page-title">Ofertas</h1>
-                    <p class="page-sub">Los mejores precios en tecnología</p>
+                    <h1 class="page-title">Productos</h1>
+                    <p class="page-sub">Encuentra todo lo que necesitas</p>
 
 
                     <select (change)="sortBy($event)">
@@ -32,33 +32,34 @@
                 </div>
             </div>
 
-            <span class="results-count">{{ filteredProducts.length }} productos encontrados</span>
+            <span class="results-count">{{ allProducts.length }} productos encontrados</span>
 
             <!-- Grid -->
             <div class="products-grid">
 
-                @for (product of this.filteredProducts; track product.id) {
+                @for (product of this.allProducts; track product.id) {
 
-                    <mat-card class="product-card" appearance="outlined">
-                        <span class="badge-discount">-{{ product.discountPercentage }}%</span>
-                        @if (product.featured) {
-                        <span class="badge-featured">Destacado</span>
-                        }
-                        <img mat-card-image [src]="product.picture" [alt]="product.name" />
-                        <mat-card-content>
-                            <span class="product-tag">{{ product.categoryName }}</span>
-                            <h6>{{ product.name }}</h6>
-                            <p>{{ product.description }}</p>
-                            <div class="product-footer">
-                                <div class="price-wrap">
-                                    <span class="price-original">{{ product.price | currency:'USD' }}</span>
-                                    <span class="price-final">{{ product.price * (1 - product.discountPercentage / 100) |
-                                        currency:'USD' }}</span>
-                                </div>
-                                <button class="add-button" mat-flat-button type="button">Agregar</button>
+                <mat-card class="product-card" appearance="outlined">
+                    <span class="badge-discount">-{{ product.discountPercentage }}%</span>
+                    @if (product.featured) {
+                    <span class="badge-featured">Destacado</span>
+                    }
+                    <img mat-card-image [src]="product.picture" [alt]="product.name" />
+                    <mat-card-content>
+                        <span class="product-tag">{{ product.categoryName }}</span>
+                        <h6>{{ product.name }}</h6>
+                        <p>{{ product.description }}</p>
+                        <div class="product-footer">
+                            <div class="price-wrap">
+                                <span class="price-original">{{ product.price | currency:'USD' }}</span>
+                                <span class="price-final">{{ product.price * (1 - product.discountPercentage / 100) |
+                                    currency:'USD' }}</span>
                             </div>
-                        </mat-card-content>
-                    </mat-card>
+                            <button class="add-button" mat-flat-button type="button">Agregar</button>
+                            <button class="add-button" mat-flat-button type="button">ver</button>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
 
                 } @empty {
                 <p class="empty-state">No hay productos en esta categoría.</p>
@@ -73,7 +74,7 @@
 
         <div class="carousel-shell">
 
-            <h3 class="section-title">Productos destacados con oferta</h3>
+            <h3 class="section-title">Productos destacados</h3>
 
             <div class="carousel-container">
                 <button class="carousel-control prev" mat-icon-button type="button" aria-label="Anterior"
@@ -83,9 +84,9 @@
 
                 <div class="products-grid" #productsGrid>
 
-                    @for (product of filteredProducts; track product.id) {
+                    @for (product of allProducts; track product.id) {
 
-                    @if (product.featured && product.status) {
+                    @if (product.featured) {
 
                     <mat-card class="product-card" appearance="outlined">
 

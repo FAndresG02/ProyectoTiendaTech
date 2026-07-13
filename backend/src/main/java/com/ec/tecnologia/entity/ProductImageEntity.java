@@ -4,28 +4,22 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDateTime;
-
 @Data // Lombok: genera automáticamente getters, setters, toString, equals y hashCode
 @Entity // JPA: indica que esta clase es una entidad que representa una tabla en la BD
 @DynamicUpdate // Hibernate: solo actualiza en SQL las columnas que cambiaron
-@Table(name = "product")
-public class ProductEntity {
+public class ProductImageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String description;
-    private Double price;
-    private Boolean status;
-    private Integer discountPercentage;
-    private Boolean featured;
+    private String url;
+    private Integer order;
+    private Boolean isPrincipal;
 
-    //Muchos ProductEntity pertenecen a una sola categoria (CategoryEntity)
+    //Muchos ProductImage pertencen a un solo ProductEntity
     @ManyToOne(fetch = FetchType.LAZY)
-    //category_id apunta a CategoryEntity
-    @JoinColumn(name = "category_id")
-    private CategoryEntity category;
+    //product_id apunta al id del ProductEntity
+    @JoinColumn(name = "product_id")
+    private ProductEntity productEntity;
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
@@ -6,6 +6,7 @@ import { CurrencyPipe } from '@angular/common';
 import { ProductService } from '../../../core/services/product-service';
 import { SnackbarService } from '../../../core/services/snackbar-service';
 import { MATERIAL_IMPORTS } from '../../../shared/material.imports';
+import { GetProduct } from '../../../interface/product/get-product';
 
 @Component({
   selector: 'app-main-page',
@@ -18,6 +19,8 @@ import { MATERIAL_IMPORTS } from '../../../shared/material.imports';
   styleUrl: './main-page.scss',
 })
 export class MainPage implements OnInit {
+
+  @ViewChild('productsGrid', { static: false }) productsGrid!: ElementRef<HTMLElement>;
 
   dataProducts: any[] = [];
   responseMessage: any;
@@ -43,9 +46,17 @@ export class MainPage implements OnInit {
     this.obtenerProductos();
   }
 
+  scrollCarousel(direction: number) {
+    const grid = this.productsGrid?.nativeElement;
+    if (grid) {
+      const scrollAmount = grid.clientWidth * 0.8;
+      grid.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+    }
+  }
+
   obtenerProductos() {
 
-    this.productService.getProducts().subscribe((response: any) => {
+    this.productService.getProducts().subscribe((response: GetProduct[]) => {
 
       this.ngxService.stop();
       this.dataProducts = response;

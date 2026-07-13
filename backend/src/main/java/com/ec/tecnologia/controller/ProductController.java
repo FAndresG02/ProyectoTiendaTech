@@ -57,7 +57,7 @@ public class ProductController {
     //admin/user
     //Metodo para obtener productos por categoria
     @GetMapping(path = "/getProductByCategory/{categoryId}")
-    public ResponseEntity<List<GetProductByCategory>> getProductByCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<List<GetProductByCategoryDto>> getProductByCategory(@PathVariable Long categoryId) {
 
         try {
 
@@ -72,7 +72,7 @@ public class ProductController {
     //admin/user
     //Metodo para obtener un producto por su id
     @GetMapping(path = "/getProductById/{id}")
-    public ResponseEntity<GetProductById> getProductById(@PathVariable Long id) {
+    public ResponseEntity<GetProductByIdDto> getProductById(@PathVariable Long id) {
 
         try {
 
@@ -80,7 +80,7 @@ public class ProductController {
 
         }catch (Exception e){
             log.error("Error al obtener el producto", e);
-            return new ResponseEntity<>(new GetProductById(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new GetProductByIdDto(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

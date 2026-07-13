@@ -8,7 +8,6 @@ import com.ec.tecnologia.repository.CategoryRepository;
 import com.ec.tecnologia.repository.ProductRepository;
 import com.ec.tecnologia.security.JwtAuthenticationFilter;
 import com.ec.tecnologia.utils.TecUtils;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +42,7 @@ public class ProductService {
     @Value("${server.url}")
     private String serverUrl;
 
+    //Panel de Admins
     //Metodo para agregar un producto
     public ResponseEntity<?> addProduct( ProductDto productDto){
 
@@ -70,10 +68,8 @@ public class ProductService {
                         newProductEntity.setDescription(productDto.getDescription());
                         newProductEntity.setPrice(productDto.getPrice());
                         newProductEntity.setStatus(true);
-                        newProductEntity.setPicture("defaultImage.png");
                         newProductEntity.setDiscountPercentage(productDto.getDiscountPercentage());
                         newProductEntity.setFeatured(false);
-                        newProductEntity.setCreatedAt(LocalDateTime.now());
                         newProductEntity.setCategory(categoryEntity);
 
                         productRepository.save(newProductEntity);
@@ -104,20 +100,16 @@ public class ProductService {
 
     //----------------------------------------------------------------------------------------------------------------
 
+    ////Panel de Users y Admins
     //Metodo para obtener todos los productos
+    //Este metodo sirve para rellenar cartas en la vista general del ecommerce como cartas de productos, Destacados
+    //en oferta, y con status = true;
     public ResponseEntity<List<GetProductDto>> getProducts(){
 
         try {
-
                 List<GetProductDto> getProductDtos = productRepository.getAllProduct();
 
-                for(GetProductDto getProductDto : getProductDtos){
-
-                    getProductDto.setPicture(serverUrl + "/images/" + getProductDto.getPicture());
-                }
-
                 return new ResponseEntity<>(getProductDtos, HttpStatus.OK);
-
 
         }catch (Exception e){
             log.error("Error al obtener los productos", e);
@@ -125,8 +117,10 @@ public class ProductService {
         }
     }
 
+    //!!!!!!!!Arreglar esto poner un foco por ahora solo
+    //Panel de Admins
     //Metodo para obtener todos los productos de una categoria
-    public ResponseEntity<List<GetProductByCategory>> getProductByCategory(@RequestParam Long categoryId) {
+    public ResponseEntity<List<GetProductByCategoryDto>> getProductByCategory(@RequestParam Long categoryId) {
 
         try {
 
@@ -138,21 +132,21 @@ public class ProductService {
         }
     }
 
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     //Metodo para obtener un producto por su id
-    public ResponseEntity<GetProductById> getProductById(@PathVariable Long id) {
+    //En este caso sirve para mostrar en le pnael de los users por ahora quedaria asi
+    public ResponseEntity<GetProductByIdDto> getProductById(@PathVariable Long id) {
 
         try {
 
-            GetProductById getProductByIds = productRepository.getProductById(id);
+            GetProductByIdDto getProductByIdsDto = productRepository.getProductById(id);
 
-            getProductByIds.setPicture(serverUrl + "/images/" + getProductByIds.getPicture());
-
-            return new ResponseEntity<>(getProductByIds, HttpStatus.OK);
+            return new ResponseEntity<>(getProductByIdsDto, HttpStatus.OK);
 
 
         }catch (Exception e){
             log.error("Error al obtener el producto", e);
-            return new ResponseEntity<>(new GetProductById(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new GetProductByIdDto(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

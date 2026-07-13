@@ -3,6 +3,8 @@ import { Routes } from '@angular/router';
 import { Offer } from './components/pages/offer/offer';
 import { PublicLayout } from './components/layouts/public-layout/public-layout';
 import { MainPage } from './components/pages/main-page/main-page';
+import { AllProducts } from './components/pages/all-products/all-products';
+import { ProductView } from './components/pages/product-view/product-view';
 
 export const routes: Routes = [
 
@@ -11,7 +13,9 @@ export const routes: Routes = [
     component: PublicLayout,
     children: [
       { path: '', component: MainPage}, // Ruta principal
-      { path: 'ofertas', component: Offer },
+      { path: 'offer', component: Offer },
+      { path: 'allProducts', component: AllProducts},
+      { path: 'productView', component: ProductView},
     ]
   },
 
