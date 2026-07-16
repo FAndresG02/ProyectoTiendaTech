@@ -14,7 +14,7 @@ public class ProductImageEntity {
     private Long id;
 
     private String url;
-    private Integer order;
+    private Integer orderImage;
     private Boolean isPrincipal;
 
     //Muchos ProductImage pertencen a un solo ProductEntity
