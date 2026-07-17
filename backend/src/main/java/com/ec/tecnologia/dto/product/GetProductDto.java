@@ -20,6 +20,7 @@ public class GetProductDto {
     private Boolean featured;
     private Long categoryId;
     private String categoryName;
+    private String principalImageUrl;
 
     //Este se usa para extraer todos los productos
     public GetProductDto(Long id,
@@ -30,7 +31,8 @@ public class GetProductDto {
                          Integer discountPercentage,
                          Boolean featured,
                          Long categoryId,
-                         String categoryName) {
+                         String categoryName,
+                         String principalImageUrl) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -40,6 +42,7 @@ public class GetProductDto {
         this.featured = featured;
         this.categoryId = categoryId;
         this.categoryName = categoryName;
+        this.principalImageUrl = principalImageUrl;
     }
 
 }

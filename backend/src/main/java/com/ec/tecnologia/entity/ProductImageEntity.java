@@ -1,5 +1,6 @@
 package com.ec.tecnologia.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
@@ -19,7 +20,7 @@ public class ProductImageEntity {
 
     //Muchos ProductImage pertencen a un solo ProductEntity
     @ManyToOne(fetch = FetchType.LAZY)
-    //product_id apunta al id del ProductEntity
     @JoinColumn(name = "product_id")
+    @JsonIgnore
     private ProductEntity productEntity;
 }

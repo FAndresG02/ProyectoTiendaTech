@@ -1,10 +1,8 @@
 package com.ec.tecnologia.controller;
 
 import com.ec.tecnologia.config.TecConstants;
-import com.ec.tecnologia.dto.product.ProductDto;
 import com.ec.tecnologia.service.ProductImageService;
 import com.ec.tecnologia.utils.TecUtils;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,9 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
-@RestController //manejara peticiones HTTP
-@RequestMapping(path = "/cart") //define la ruta de las peticiones
+@RestController
+@RequestMapping(path = "/image")
 public class ProductImageController {
 
     @Autowired
@@ -31,5 +33,34 @@ public class ProductImageController {
         }
     }
 
+    @PatchMapping(path = "/setPrincipal/{imageId}")
+    public ResponseEntity<?> setPrincipalImage(@PathVariable Long imageId){
+        try {
+            return productImageService.setPrincipalImage(imageId);
+        }catch (Exception e){
+            log.error("Error al actualizar la imagen principal", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(path = "/byProduct/{productId}")
+    public ResponseEntity<List<Map<String, Object>>> getImagesByProduct(@PathVariable Long productId){
+        try {
+            return productImageService.getImagesByProduct(productId);
+        }catch (Exception e){
+            log.error("Error al obtener las imagenes del producto", e);
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping(path = "/deleteImage/{imageId}")
+    public ResponseEntity<?> deleteImage(@PathVariable Long imageId){
+        try {
+            return productImageService.deleteImage(imageId);
+        }catch (Exception e){
+            log.error("Error al eliminar la imagen", e);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

@@ -39,26 +39,27 @@
 
                 @for (product of this.filteredProducts; track product.id) {
 
-                    <mat-card class="product-card" appearance="outlined">
-                        <span class="badge-discount">-{{ product.discountPercentage }}%</span>
-                        @if (product.featured) {
-                        <span class="badge-featured">Destacado</span>
-                        }
-                        <img mat-card-image [src]="product.picture" [alt]="product.name" />
-                        <mat-card-content>
-                            <span class="product-tag">{{ product.categoryName }}</span>
-                            <h6>{{ product.name }}</h6>
-                            <p>{{ product.description }}</p>
-                            <div class="product-footer">
-                                <div class="price-wrap">
-                                    <span class="price-original">{{ product.price | currency:'USD' }}</span>
-                                    <span class="price-final">{{ product.price * (1 - product.discountPercentage / 100) |
-                                        currency:'USD' }}</span>
-                                </div>
-                                <button class="add-button" mat-flat-button type="button">Agregar</button>
+                <mat-card class="product-card" appearance="outlined">
+                    <span class="badge-discount">-{{ product.discountPercentage }}%</span>
+                    @if (product.featured) {
+                    <span class="badge-featured">Destacado</span>
+                    }
+                    <img mat-card-image [src]="product.principalImageUrl" [alt]="product.name"
+                        [routerLink]="['/productView', product.id]" style="cursor: pointer;" />
+                    <mat-card-content>
+                        <span class="product-tag">{{ product.categoryName }}</span>
+                        <h6>{{ product.name }}</h6>
+                        <p>{{ product.description }}</p>
+                        <div class="product-footer">
+                            <div class="price-wrap">
+                                <span class="price-original">{{ product.price | currency:'USD' }}</span>
+                                <span class="price-final">{{ product.price * (1 - product.discountPercentage / 100) |
+                                    currency:'USD' }}</span>
                             </div>
-                        </mat-card-content>
-                    </mat-card>
+                            <button class="add-button" mat-flat-button type="button">Agregar</button>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
 
                 } @empty {
                 <p class="empty-state">No hay productos en esta categoría.</p>
@@ -71,66 +72,74 @@
 
     <div class="carousel-wrapper">
 
-        <div class="carousel-shell">
+        <div class="carousel-promo-row">
 
-            <h3 class="section-title">Productos destacados con oferta</h3>
-
-            <div class="carousel-container">
-                <button class="carousel-control prev" mat-icon-button type="button" aria-label="Anterior"
-                    (click)="scrollCarousel(-1)">
-                    <mat-icon>chevron_left</mat-icon>
-                </button>
-
-                <div class="products-grid" #productsGrid>
-
-                    @for (product of filteredProducts; track product.id) {
-
-                    @if (product.featured && product.status) {
-
-                    <mat-card class="product-card" appearance="outlined">
-
-                        <span class="badge-discount">-{{ product.discountPercentage }}%</span>
-                        <span class="badge-featured">Destacado</span>
-
-                        <img mat-card-image [src]="product.picture" [alt]="product.name" />
-
-                        <mat-card-content>
-                            <span class="product-tag">{{ product.categoryName }}</span>
-                            <h6>{{ product.name }}</h6>
-                            <p>{{ product.description }}</p>
-                            <div class="product-footer">
-                                <div class="price-wrap">
-                                    @if (product.discountPercentage > 0) {
-                                    <span class="price-original">{{ product.price | currency:'USD' }}</span>
-                                    <span class="price-final">{{ product.price * (1 - product.discountPercentage / 100)
-                                        |
-                                        currency:'USD'
-                                        }}</span>
-                                    } @else {
-                                    <span class="price-final">{{ product.price | currency:'USD' }}</span>
-                                    }
-                                </div>
-                                <button class="add-button" mat-flat-button type="button">Agregar</button>
-                            </div>
-                        </mat-card-content>
-
-                    </mat-card>
-
-                    }
-
-                    } @empty {
-                    <p class="empty-state">No hay productos disponibles.</p>
-                    }
-
-                </div>
-
-                <button class="carousel-control next" mat-icon-button type="button" aria-label="Siguiente"
-                    (click)="scrollCarousel(1)">
-                    <mat-icon>chevron_right</mat-icon>
-                </button>
+            <div class="promo-image">
+                <img src="https://picsum.photos/seed/promo/400/500" alt="Promoción" />
             </div>
 
-        </div>
+            <div class="carousel-shell">
 
+                <h3 class="section-title">Productos destacados con oferta</h3>
+
+                <div class="carousel-container">
+                    <button class="carousel-control prev" mat-icon-button type="button" aria-label="Anterior"
+                        (click)="scrollCarousel(-1)">
+                        <mat-icon>chevron_left</mat-icon>
+                    </button>
+
+                    <div class="products-grid" #productsGrid>
+
+                        @for (product of filteredProducts; track product.id) {
+
+                        @if (product.featured && product.status) {
+
+                        <mat-card class="product-card" appearance="outlined">
+
+                            <span class="badge-discount">-{{ product.discountPercentage }}%</span>
+                            <span class="badge-featured">Destacado</span>
+
+                            <img mat-card-image [src]="product.principalImageUrl" [alt]="product.name"
+                                [routerLink]="['/productView', product.id]" style="cursor: pointer;" />
+
+                            <mat-card-content>
+                                <span class="product-tag">{{ product.categoryName }}</span>
+                                <h6>{{ product.name }}</h6>
+                                <p>{{ product.description }}</p>
+                                <div class="product-footer">
+                                    <div class="price-wrap">
+                                        @if (product.discountPercentage > 0) {
+                                        <span class="price-original">{{ product.price | currency:'USD' }}</span>
+                                        <span class="price-final">{{ product.price * (1 - product.discountPercentage /
+                                            100)
+                                            |
+                                            currency:'USD'
+                                            }}</span>
+                                        } @else {
+                                        <span class="price-final">{{ product.price | currency:'USD' }}</span>
+                                        }
+                                    </div>
+                                    <button class="add-button" mat-flat-button type="button">Agregar</button>
+                                </div>
+                            </mat-card-content>
+
+                        </mat-card>
+
+                        }
+
+                        } @empty {
+                        <p class="empty-state">No hay productos disponibles.</p>
+                        }
+
+                    </div>
+
+                    <button class="carousel-control next" mat-icon-button type="button" aria-label="Siguiente"
+                        (click)="scrollCarousel(1)">
+                        <mat-icon>chevron_right</mat-icon>
+                    </button>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>

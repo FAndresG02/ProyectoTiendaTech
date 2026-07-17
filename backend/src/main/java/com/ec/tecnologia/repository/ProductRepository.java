@@ -31,12 +31,13 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
             "p.discountPercentage, " +
             "p.featured, " +
             "p.category.id, " +
-            "p.category.name)" +
+            "p.category.name, " +
+            "(select pi.url from ProductImageEntity pi where pi.productEntity.id = p.id and pi.isPrincipal = true)) " +
             "from ProductEntity p")
     List<GetProductDto> getAllProduct();
 
     //Selecciona todos los productos que pertenezcan a una categoría específica y estén activos status='true'
-    @Query("select new com.ec.tecnologia.dto.product.GetProductByCategory(" +
+    @Query("select new com.ec.tecnologia.dto.product.GetProductByCategoryDto(" +
             "p.id, " +
             "p.name) " +
             "from ProductEntity p " +

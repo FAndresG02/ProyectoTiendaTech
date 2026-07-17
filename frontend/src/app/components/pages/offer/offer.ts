@@ -10,6 +10,7 @@ import { COMMON_IMPORTS } from '../../../shared/shared';
 import { CategoryService } from '../../../core/services/category-service';
 import { GetCategory } from '../../../interface/category/get-category';
 import { MatListOption } from '@angular/material/list';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-offer',
@@ -17,6 +18,7 @@ import { MatListOption } from '@angular/material/list';
     ...MATERIAL_IMPORTS,
     ...COMMON_IMPORTS,
     CurrencyPipe,
+    RouterLink,
   ],
   templateUrl: './offer.html',
   styleUrl: './offer.scss',

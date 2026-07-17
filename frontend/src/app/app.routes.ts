@@ -8,17 +8,17 @@ import { ProductView } from './components/pages/product-view/product-view';
 
 export const routes: Routes = [
 
-    {
+  {
     path: '',
     component: PublicLayout,
     children: [
-      { path: '', component: MainPage}, // Ruta principal
+      { path: '', component: MainPage }, // Ruta principal
       { path: 'offer', component: Offer },
-      { path: 'allProducts', component: AllProducts},
-      { path: 'productView', component: ProductView},
+      { path: 'allProducts', component: AllProducts },
+      { path: 'productView/:id', component: ProductView },
     ]
   },
 
-    // Ruta comodín para manejar rutas no encontradas (fallback)
-    { path: '**', component: MainPage },
+  // Ruta comodín para manejar rutas no encontradas (fallback)
+  { path: '**', component: MainPage },
 ];

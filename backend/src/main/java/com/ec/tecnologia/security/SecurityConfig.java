@@ -50,7 +50,7 @@ public class SecurityConfig {
                                 "/users/signup",
                                 "/users/forgotPassword",
 
-                                "/images/**",
+                                "/uploads/**",
 
                                 // ─── Rutas públicas del ecommerce ───
                                 "/product/getProducts",

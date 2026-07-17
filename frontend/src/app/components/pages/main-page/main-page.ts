@@ -7,11 +7,13 @@ import { ProductService } from '../../../core/services/product-service';
 import { SnackbarService } from '../../../core/services/snackbar-service';
 import { MATERIAL_IMPORTS } from '../../../shared/material.imports';
 import { GetProduct } from '../../../interface/product/get-product';
+import { COMMON_IMPORTS } from '../../../shared/common.imports';
 
 @Component({
   selector: 'app-main-page',
   imports: [
     ...MATERIAL_IMPORTS,
+    ...COMMON_IMPORTS,
     CurrencyPipe,
     RouterLink,
   ],

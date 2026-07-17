@@ -9,12 +9,14 @@ import { SnackbarService } from '../../../core/services/snackbar-service';
 import { CategoryService } from '../../../core/services/category-service';
 import { GlobalConstants } from '../../../shared/global-constants';
 import { MatListOption } from '@angular/material/list';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-all-products',
   imports: [
     ...MATERIAL_IMPORTS,
-    ...COMMON_IMPORTS
+    ...COMMON_IMPORTS,
+    RouterLink,
   ],
   templateUrl: './all-products.html',
   styleUrl: './all-products.scss',

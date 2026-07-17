@@ -109,6 +109,12 @@ public class ProductService {
         try {
                 List<GetProductDto> getProductDtos = productRepository.getAllProduct();
 
+                for (GetProductDto dto : getProductDtos) {
+                    if (dto.getPrincipalImageUrl() != null) {
+                        dto.setPrincipalImageUrl(serverUrl + dto.getPrincipalImageUrl());
+                    }
+                }
+
                 return new ResponseEntity<>(getProductDtos, HttpStatus.OK);
 
         }catch (Exception e){
@@ -198,43 +204,6 @@ public class ProductService {
             return TecUtils.getResponseEntity(
                     TecConstants.SOMETHING_WENT_WRONG,
                     HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    //Metodo para actualizar la imagen del producto
-    public ResponseEntity<?> updatePictureProduct(Long id, MultipartFile picture) {
-        try {
-            if (jwtAuthenticationFilter.isAdmin()) {
-
-                ProductEntity product = productRepository.findById(id).orElse(null);
-
-                if (product == null) {
-                    return new ResponseEntity<>("Producto no encontrado", HttpStatus.NOT_FOUND);
-                }
-
-                Path uploadDir = Paths.get("uploads/images");
-                Files.createDirectories(uploadDir);
-
-                String filename = UUID.randomUUID() + "_" + picture.getOriginalFilename();
-                Path path = uploadDir.resolve(filename);
-
-                Files.copy(
-                        picture.getInputStream(),
-                        path,
-                        StandardCopyOption.REPLACE_EXISTING
-                );
-
-                product.setPicture(filename);
-                productRepository.save(product);
-
-                return new ResponseEntity<>("Imagen actualizada correctamente", HttpStatus.OK);
-
-            } else {
-                return TecUtils.getResponseEntity(TecConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
-            }
-        } catch (Exception e) {
-            log.error("Error al actualizar la imagen del producto", e);
-            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -368,48 +337,6 @@ public class ProductService {
         }catch (Exception e){
             log.error("Error al eliminar el producto", e);
             return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    //Metodo para eliminar un imagen
-    public ResponseEntity<?> deletePictureProduct(@PathVariable Long id) {
-        try {
-
-            if (jwtAuthenticationFilter.isAdmin()){
-
-                //Buscamos el producto por id
-                ProductEntity productEntity = productRepository.findById(id).orElse(null);
-
-                //Si el producto no existe devuelve not found
-                if (productEntity == null){
-                    return new ResponseEntity<>("Producto no existe", HttpStatus.NOT_FOUND);
-                }
-
-                //Obtiene la imagen del producto
-                String picture = productEntity.getPicture();
-
-                //si la imagen no es nula o que no este vacio o que no tenga solo espacios
-                if(picture != null && !picture.isBlank()){
-                    //crea la url donde se encuentra la imgen para borrar por ejm uploads/images/(productEntity image)
-                    Path imagePath = Paths.get("uploads/images/" + picture);
-                    //Elimina la imagen en esa ruta
-                    Files.deleteIfExists(imagePath);
-                }
-
-                //Despues de eliminar setea la imagen por defecto
-                productEntity.setPicture("defaultImage.png");
-                //Guarda el productEntity
-                productRepository.save(productEntity);
-
-                return TecUtils.getResponseEntity("Imagen eliminado correctamente", HttpStatus.OK);
-            }else{
-                return TecUtils.getResponseEntity(TecConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
-            }
-
-        } catch (Exception e) {
-            log.error("Error al eliminar la imagen del producto", e);
-            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR
-            );
         }
     }
 }

@@ -9,12 +9,10 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-
-        // Imágenes subidas por usuarios — fuera del JAR
-        registry.addResourceHandler("/images/**")
+        registry.addResourceHandler("/uploads/images/**") // cambia el patrón aquí
                 .addResourceLocations(
                         "file:" + System.getProperty("user.dir") + "/uploads/images/",
-                        "classpath:/static/images/"  // ← fallback a la imagen por defecto
+                        "classpath:/static/images/"
                 );
     }
 }

@@ -100,19 +100,6 @@ public class ProductController {
     }
 
     //admin
-    @PatchMapping(path = "/updatePictureProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?>  updatePictureProduct(@PathVariable Long id, @RequestPart MultipartFile picture){
-        try {
-
-            return productService.updatePictureProduct(id, picture);
-
-        }catch (Exception e){
-            log.error("Error al actualizar la imágen del producto", e);
-            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    //admin
     @PatchMapping(path = "/updateStatusProduct")
     public ResponseEntity<?> updateStatusProduct(@Valid @RequestBody UpdateStatusProductDto updateStatusProductDto){
         try {
@@ -163,20 +150,6 @@ public class ProductController {
         }catch (Exception e){
             log.error("Error al eliminar el producto", e);
             return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    //admin
-    @DeleteMapping("/deletePictureProduct/{id}")
-    public ResponseEntity<?> deletePictureProduct(@PathVariable Long id) {
-        try {
-
-            return productService.deletePictureProduct(id);
-
-        } catch (Exception e) {
-            log.error("Error al eliminar la imagen del producto", e);
-            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR
-            );
         }
     }
 
