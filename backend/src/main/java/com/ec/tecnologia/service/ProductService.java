@@ -1,11 +1,12 @@
 package com.ec.tecnologia.service;
 
 import com.ec.tecnologia.config.TecConstants;
+import com.ec.tecnologia.dto.image.GetImageDto;
 import com.ec.tecnologia.dto.product.*;
-import com.ec.tecnologia.entity.CategoryEntity;
-import com.ec.tecnologia.entity.ProductEntity;
-import com.ec.tecnologia.repository.CategoryRepository;
-import com.ec.tecnologia.repository.ProductRepository;
+import com.ec.tecnologia.dto.productFeature.GetProductFeatureDto;
+import com.ec.tecnologia.dto.review.GetReviewsDto;
+import com.ec.tecnologia.entity.*;
+import com.ec.tecnologia.repository.*;
 import com.ec.tecnologia.security.JwtAuthenticationFilter;
 import com.ec.tecnologia.utils.TecUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,13 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
+    private ProductImageRepository productImageRepository;
+    @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    private ProductFeatureRepository productFeatureRepository;
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @Value("${server.url}")
     private String serverUrl;
@@ -141,18 +148,43 @@ public class ProductService {
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     //Metodo para obtener un producto por su id
     //En este caso sirve para mostrar en le pnael de los users por ahora quedaria asi
-    public ResponseEntity<GetProductByIdDto> getProductById(@PathVariable Long id) {
-
+    public ResponseEntity<?> getProductById(@PathVariable Long id) {
         try {
-
             GetProductByIdDto getProductByIdsDto = productRepository.getProductById(id);
+            if (getProductByIdsDto == null) {
+                return TecUtils.getResponseEntity("El producto no existe", HttpStatus.NOT_FOUND);
+            }
+
+            // Imágenes (ya lo tienes)
+            List<ProductImageEntity> imagenes = productImageRepository.findByProductEntityIdOrderByOrderImageAsc(id);
+            List<GetImageDto> imagesDto = imagenes.stream()
+                    .map(img -> new GetImageDto(
+                            img.getId(), serverUrl + img.getUrl(), img.getOrderImage(), img.getIsPrincipal()
+                    ))
+                    .toList();
+            getProductByIdsDto.setImages(imagesDto);
+
+            // Reviews: reutiliza los mismos 3 métodos que ya usas en getReviewsByProduct
+            List<GetReviewsDto> reviews = reviewRepository.getReviewsByProductId(id);
+            Double averageRating = reviewRepository.getAverageRatingByProductId(id);
+            Long totalReviews = reviewRepository.countReviewsByProductId(id);
+
+            getProductByIdsDto.setReviews(reviews);
+            getProductByIdsDto.setAverageRating(averageRating);
+            getProductByIdsDto.setTotalReviews(totalReviews);
+
+            // En getProductById, agrega:
+            List<ProductFeatureEntity> featureEntities = productFeatureRepository.findByProductId(id);
+            List<GetProductFeatureDto> featuresDto = featureEntities.stream()
+                    .map(f -> new GetProductFeatureDto(f.getId(), f.getDescription()))
+                    .toList();
+            getProductByIdsDto.setFeatures(featuresDto);
 
             return new ResponseEntity<>(getProductByIdsDto, HttpStatus.OK);
 
-
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error al obtener el producto", e);
-            return new ResponseEntity<>(new GetProductByIdDto(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return TecUtils.getResponseEntity(TecConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

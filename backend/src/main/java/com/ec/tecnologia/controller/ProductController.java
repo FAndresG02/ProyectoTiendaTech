@@ -72,7 +72,7 @@ public class ProductController {
     //admin/user
     //Metodo para obtener un producto por su id
     @GetMapping(path = "/getProductById/{id}")
-    public ResponseEntity<GetProductByIdDto> getProductById(@PathVariable Long id) {
+    public ResponseEntity<?> getProductById(@PathVariable Long id) {
 
         try {
 

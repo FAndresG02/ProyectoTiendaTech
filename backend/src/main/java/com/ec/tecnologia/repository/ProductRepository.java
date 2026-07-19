@@ -44,12 +44,9 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
             "where p.category.id = :categoryId and p.status = true")
     List<GetProductByCategoryDto> getProductsByCategory(@Param("categoryId") Long categoryId);
 
-
     @Query("select new com.ec.tecnologia.dto.product.GetProductByIdDto(" +
-            "p.id, " +
-            "p.name, " +
-            "p.description, " +
-            "p.price) " +
+            "p.id, p.name, p.description, p.price, p.status, " +
+            "p.discountPercentage, p.featured, p.category.id, p.category.name) " +
             "from ProductEntity p " +
             "where p.id = :id")
     GetProductByIdDto getProductById(@Param("id") Long id);
