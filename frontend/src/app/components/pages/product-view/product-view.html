@@ -3,81 +3,89 @@
         <div class="breadcrumb">
             <a href="/">Inicio</a>
             <mat-icon>chevron_right</mat-icon>
-            <a href="/productos">Productos</a>
+            <a href="/allProducts">Productos</a>
             <mat-icon>chevron_right</mat-icon>
-            <span>Auriculares Bluetooth Pro</span>
+            @if (product) {
+            <span>{{ product.name }}</span>
+            }
         </div>
 
         <div class="product-detail">
+            <!-- Si existe el producto -->
+            @if (product) {
             <div class="product-gallery">
                 <div class="gallery-carousel">
-                    <input type="radio" name="carousel" id="slide-1" checked>
-                    <input type="radio" name="carousel" id="slide-2">
-
-                    <div class="carousel-track">
+                    <div class="carousel-track" [style.transform]="'translateX(-' + currentSlide * 100 + '%)'">
+                        @for (image of product.images; track image.id) {
                         <div class="carousel-slide">
-                            <img src="assets/images/product-main.jpg" alt="Auriculares Bluetooth Pro" />
+                            <img [src]="image.url" [alt]="product.name">
                         </div>
-                        <div class="carousel-slide">
-                            <img src="assets/images/product-thumb-1.jpg" alt="Auriculares Bluetooth Pro" />
-                        </div>
+                        }
                     </div>
-
-                    <div class="carousel-controls">
-                        <label for="slide-1" class="carousel-btn prev">
-                            <mat-icon>chevron_left</mat-icon>
-                        </label>
-                        <label for="slide-2" class="carousel-btn next">
-                            <mat-icon>chevron_right</mat-icon>
-                        </label>
-                    </div>
-
-                    <div class="carousel-dots">
-                        <label for="slide-1" class="dot"></label>
-                        <label for="slide-2" class="dot"></label>
-                    </div>
-
-                    <span class="badge-discount">-25%</span>
+                    @if (product.images.length > 1) {
+                    <button type="button" class="carousel-btn prev" (click)="prevSlide()">
+                        <mat-icon>chevron_left</mat-icon>
+                    </button>
+                    <button type="button" class="carousel-btn next" (click)="nextSlide()">
+                        <mat-icon>chevron_right</mat-icon>
+                    </button>
+                    }
+                    @if (product.discountPercentage > 0) {
+                    <span class="badge-discount">
+                        -{{ product.discountPercentage }}%
+                    </span>
+                    }
                 </div>
             </div>
+            }
 
             <div class="product-info">
-                <span class="product-tag">Electrónicos</span>
-                <h1 class="product-name">Auriculares Bluetooth Pro</h1>
+                @if (product) {
+
+                @if (product.featured) {
+                <span class="badge-featured">Destacado</span>
+                }
+
+                <span class="product-tag">{{ product.categoryName }}</span>
+                <h1 class="product-name">{{ product.name }}</h1>
 
                 <div class="product-rating">
                     <div class="stars">
-                        <mat-icon class="filled">star</mat-icon>
-                        <mat-icon class="filled">star</mat-icon>
-                        <mat-icon class="filled">star</mat-icon>
-                        <mat-icon class="filled">star</mat-icon>
-                        <mat-icon>star</mat-icon>
+                        @for (star of getStars(product.averageRating); track $index) {
+                        <mat-icon>{{ star }}</mat-icon>
+                        }
                     </div>
-                    <span class="rating-text">4.5 / 5</span>
+                    <span class="rating-text">
+                        {{ product.averageRating | number:'1.1-1' }} / 5
+                        @if (product.totalReviews > 0) {
+                        <span class="reviews-count">({{ product.totalReviews }} {{ product.totalReviews === 1 ? 'opinión' : 'opiniones' }})</span>
+                        }
+                    </span>
                 </div>
 
                 <div class="product-price">
-                    <span class="price-original">$89.99</span>
-                    <span class="price-final">$67.49</span>
+                    @if (product.discountPercentage > 0) {
+                    <span class="price-original">${{ product.price | number:'1.2-2' }}</span>
+                    <span class="price-final">${{ calculateDiscountPrice(product.price, product.discountPercentage) }}</span>
+                    <span class="discount-badge">-{{ product.discountPercentage }}%</span>
+                    } @else {
+                    <span class="price-final">${{ product.price | number:'1.2-2' }}</span>
+                    }
                 </div>
 
-                <p class="product-description">Auriculares inalámbricos con cancelación de ruido activa, drivers de 40mm
-                    y batería de hasta 40 horas de reproducción. Cómodos y ligeros, ideales para uso diario y viajes.
-                </p>
+                <p class="product-description">{{ product.description }}</p>
 
                 <div class="product-meta">
                     <div class="meta-item">
                         <mat-icon>category</mat-icon>
-                        <span>Categoría: <strong>Electrónicos</strong></span>
+                        <span><strong>{{ product.categoryName }}</strong></span>
                     </div>
+                    @if (product.status !== undefined) {
                     <div class="meta-item">
                         <mat-icon>inventory_2</mat-icon>
-                        <span>Disponibilidad: <strong class="in-stock">15 en stock</strong></span>
+                        <span>Estado: <strong [class.available]="product.status" [class.unavailable]="!product.status">{{ product.status ? 'Disponible' : 'No disponible' }}</strong></span>
                     </div>
-                    <div class="meta-item">
-                        <mat-icon>store</mat-icon>
-                        <span>Marca: <strong>TechBrand</strong></span>
-                    </div>
+                    }
                 </div>
 
                 <div class="product-actions">
@@ -99,120 +107,147 @@
                     </button>
                 </div>
 
+                }
+
+                @if (!product) {
+                <div class="loading-state">
+                    <mat-icon>hourglass_empty</mat-icon>
+                    <p>Cargando producto...</p>
+                </div>
+                }
+
             </div>
         </div>
 
         <div class="product-features">
             <h2>Características destacadas</h2>
+            @if(product){
             <div class="features-grid">
+                @for (feature of product.features; track feature.id) {
                 <div class="feature-item">
                     <mat-icon>check_circle</mat-icon>
-                    <span>Cancelación de ruido activa híbrida</span>
+                    <span>{{feature.description}}</span>
                 </div>
-                <div class="feature-item">
-                    <mat-icon>check_circle</mat-icon>
-                    <span>Hasta 40 horas de batería</span>
-                </div>
-                <div class="feature-item">
-                    <mat-icon>check_circle</mat-icon>
-                    <span>Drives de 40mm con sonido envolvente</span>
-                </div>
-                <div class="feature-item">
-                    <mat-icon>check_circle</mat-icon>
-                    <span>Conexión Bluetooth 5.3 multipunto</span>
-                </div>
-                <div class="feature-item">
-                    <mat-icon>check_circle</mat-icon>
-                    <span>Asas plegables y estuche de carga incluido</span>
-                </div>
+                }
             </div>
+            }
         </div>
 
         <div class="product-reviews">
             <h2>Comentarios de clientes</h2>
+
+            @if (product) {
             <div class="reviews-list">
+                @for (review of product.reviews; track $index) {
                 <div class="review-item">
                     <div class="review-header">
-                        <div class="reviewer-avatar">JD</div>
+                        <div class="reviewer-avatar">{{ getInitials(review.userName) }}</div>
                         <div class="reviewer-info">
-                            <span class="reviewer-name">Juan Díaz</span>
+                            <span class="reviewer-name">{{review.userName}}</span>
+                            <span class="review-date">{{ review.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
                         </div>
-                        <span class="review-date">15 jun, 2026</span>
-                    </div>
-                    <p class="review-text">Excelentes auriculares. La cancelación de ruido funciona de maravilla y la batería dura muchísimo. Muy cómodos para usar todo el día.</p>
-                </div>
-                <div class="review-item">
-                    <div class="review-header">
-                        <div class="reviewer-avatar">MG</div>
-                        <div class="reviewer-info">
-                            <span class="reviewer-name">María García</span>
+                        <div class="review-rating">
+                            <div class="stars">
+                                @for (star of getStars(review.rating); track $index) {
+                                <mat-icon>{{ star }}</mat-icon>
+                                }
+                            </div>
+                            <span class="rating-text">{{ review.rating }} / 5</span>
                         </div>
-                        <span class="review-date">2 jun, 2026</span>
                     </div>
-                    <p class="review-text">Muy buena calidad de sonido, aunque el estuche de carga podría ser un poco más compacto. Por lo demás, todo perfecto.</p>
+                    <p class="review-text">{{ review.comment }}</p>
                 </div>
-                <div class="review-item">
-                    <div class="review-header">
-                        <div class="reviewer-avatar">CR</div>
-                        <div class="reviewer-info">
-                            <span class="reviewer-name">Carlos Ruiz</span>
-                        </div>
-                        <span class="review-date">20 may, 2026</span>
-                    </div>
-                    <p class="review-text">Los compré para trabajar y son perfectos. El micrófono capta bien la voz y la conexión Bluetooth es muy estable.</p>
-                </div>
+                }
             </div>
+            }
+
         </div>
 
-        <div class="related-products">
-            <h2>Productos relacionados</h2>
-            <div class="related-grid">
-                <mat-card class="product-card" appearance="outlined">
-                    <span class="badge-discount">-15%</span>
-                    <img mat-card-image src="assets/images/related-1.jpg" alt="Auriculares Inalámbricos Deportivos" />
-                    <mat-card-content>
-                        <span class="product-tag">Electrónicos</span>
-                        <h6>Auriculares Inalámbricos Deportivos</h6>
-                        <div class="product-footer">
-                            <div class="price-wrap">
-                                <span class="price-original">$59.99</span>
-                                <span class="price-final">$50.99</span>
-                            </div>
-                            <a class="add-button" mat-flat-button href="/producto/2">Ver producto</a>
-                        </div>
-                    </mat-card-content>
-                </mat-card>
+        <div class="carousel-wrapper">
 
-                <mat-card class="product-card" appearance="outlined">
-                    <img mat-card-image src="assets/images/related-2.jpg" alt="Base de Carga Inalámbrica" />
-                    <mat-card-content>
-                        <span class="product-tag">Accesorios</span>
-                        <h6>Base de Carga Inalámbrica</h6>
-                        <div class="product-footer">
-                            <div class="price-wrap">
-                                <span class="price-final">$29.99</span>
-                            </div>
-                            <a class="add-button" mat-flat-button href="/producto/3">Ver producto</a>
-                        </div>
-                    </mat-card-content>
-                </mat-card>
+            <div class="carousel-promo-row">
 
-                <mat-card class="product-card" appearance="outlined">
-                    <span class="badge-discount">-30%</span>
-                    <img mat-card-image src="assets/images/related-3.jpg" alt="Audífonos Gaming RGB" />
-                    <mat-card-content>
-                        <span class="product-tag">Gaming</span>
-                        <h6>Audífonos Gaming RGB</h6>
-                        <div class="product-footer">
-                            <div class="price-wrap">
-                                <span class="price-original">$79.99</span>
-                                <span class="price-final">$55.99</span>
-                            </div>
-                            <a class="add-button" mat-flat-button href="/producto/4">Ver producto</a>
+                <div class="promo-image">
+                    <img src="https://picsum.photos/seed/promo/400/500" alt="Promoción" />
+                </div>
+
+                <div class="carousel-shell">
+
+                    <h3 class="section-title">Productos Relacionados</h3>
+
+                    <div class="carousel-container">
+                        <button class="carousel-control prev" mat-icon-button type="button" aria-label="Anterior"
+                            (click)="scrollCarousel(-1)">
+                            <mat-icon>chevron_left</mat-icon>
+                        </button>
+
+                        <div class="products-grid" #productsGrid>
+
+                            @for (pro of allProducts; track pro.id) {
+
+                            @if (pro.categoryName === this.product?.categoryName && pro.id !== this.productId) {
+
+                            <mat-card class="product-card" appearance="outlined">
+
+                                @if (pro.discountPercentage > 0) {
+                                <span class="badge-discount">-{{ pro.discountPercentage }}%</span>
+                                }
+                                <span class="badge-featured">Destacado</span>
+
+                                <!--
+                            Muestra la imagen principal del producto.
+                            Al hacer clic sobre la imagen, Angular Router navega a la ruta
+                            '/productView/{id}', donde {id} corresponde al identificador del producto.
+                            El estilo 'cursor: pointer' indica visualmente que la imagen es interactiva.
+                            -->
+                                <a [routerLink]="['/productView', pro.id]" style="display: block; cursor: pointer;">
+                                    <img mat-card-image [src]="pro.principalImageUrl" [alt]="pro.name" />
+                                </a>
+
+                                <mat-card-content>
+                                    <span class="product-tag">{{ pro.categoryName }}</span>
+                                    <a [routerLink]="['/productView', pro.id]" style="text-decoration: none; color: inherit;">
+                                        <h6>{{ pro.name }}</h6>
+                                    </a>
+                                    <p>{{ pro.description }}</p>
+                                    <div class="product-footer">
+                                        <div class="price-wrap">
+                                            @if (pro.discountPercentage > 0) {
+                                            <span class="price-original">{{ pro.price | currency:'USD' }}</span>
+                                            <span class="price-final">{{ pro.price * (1 - pro.discountPercentage
+                                                /
+                                                100)
+                                                |
+                                                currency:'USD'
+                                                }}</span>
+                                            } @else {
+                                            <span class="price-final">{{ pro.price | currency:'USD' }}</span>
+                                            }
+                                        </div>
+                                        <button class="add-button" mat-flat-button type="button">Agregar</button>
+                                    </div>
+                                </mat-card-content>
+
+                            </mat-card>
+
+                            }
+
+                            } @empty {
+                            <p class="empty-state">No hay productos disponibles.</p>
+                            }
+
                         </div>
-                    </mat-card-content>
-                </mat-card>
+
+                        <button class="carousel-control next" mat-icon-button type="button" aria-label="Siguiente"
+                            (click)="scrollCarousel(1)">
+                            <mat-icon>chevron_right</mat-icon>
+                        </button>
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
     </div>
 </div>

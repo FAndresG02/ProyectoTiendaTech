@@ -12,6 +12,4 @@ public class GetImageDto {
     private String url;
     private Integer orderImage;
     private Boolean isPrincipal;
-
-
 }

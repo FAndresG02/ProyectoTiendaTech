@@ -54,7 +54,8 @@ public class SecurityConfig {
 
                                 // ─── Rutas públicas del ecommerce ───
                                 "/product/getProducts",
-                                "/product/getProductByCategory/{categoryId}",
+                                "/product/getProductByCategory/**",
+                                "/product/getProductById/**",
 
                                 "/category/getCategories"
 

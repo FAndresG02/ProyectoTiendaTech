@@ -103,6 +103,12 @@
                             }
                             <span class="badge-featured">Destacado</span>
 
+                            <!--
+                            Muestra la imagen principal del producto.
+                            Al hacer clic sobre la imagen, Angular Router navega a la ruta
+                            '/productView/{id}', donde {id} corresponde al identificador del producto.
+                            El estilo 'cursor: pointer' indica visualmente que la imagen es interactiva.
+                            -->
                             <img mat-card-image [src]="product.principalImageUrl" [alt]="product.name"
                                 [routerLink]="['/productView', product.id]" style="cursor: pointer;" />
 
