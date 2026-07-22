@@ -114,7 +114,7 @@ public class ProductService {
     public ResponseEntity<List<GetProductDto>> getProducts(){
 
         try {
-                List<GetProductDto> getProductDtos = productRepository.getAllProduct();
+                List<GetProductDto> getProductDtos = productRepository.getProducts(null);
 
                 for (GetProductDto dto : getProductDtos) {
                     if (dto.getPrincipalImageUrl() != null) {
@@ -133,14 +133,42 @@ public class ProductService {
     //!!!!!!!!Arreglar esto poner un foco por ahora solo
     //Panel de Admins
     //Metodo para obtener todos los productos de una categoria
-    public ResponseEntity<List<GetProductByCategoryDto>> getProductByCategory(@RequestParam Long categoryId) {
+    public ResponseEntity<List<GetProductDto>> getProductByCategory(@RequestParam Long categoryId) {
 
         try {
 
-            return new ResponseEntity<>(productRepository.getProductsByCategory(categoryId), HttpStatus.OK);
+            List<GetProductDto> getProductDtos = productRepository.getProducts(categoryId);
+
+            for (GetProductDto dto : getProductDtos) {
+                if (dto.getPrincipalImageUrl() != null) {
+                    dto.setPrincipalImageUrl(serverUrl + dto.getPrincipalImageUrl());
+                }
+            }
+
+            return new ResponseEntity<>(getProductDtos, HttpStatus.OK);
 
         }catch (Exception e){
             log.error("Error al obtener los productos por categoria", e);
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<List<GetProductDto>> getProductByName(String name) {
+
+        try {
+
+            List<GetProductDto> products = productRepository.getProductByName(name);
+
+            for (GetProductDto dto : products) {
+                if (dto.getPrincipalImageUrl() != null) {
+                    dto.setPrincipalImageUrl(serverUrl + dto.getPrincipalImageUrl());
+                }
+            }
+
+            return new ResponseEntity<>(products, HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("Error al buscar productos por nombre", e);
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

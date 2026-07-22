@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MATERIAL_IMPORTS } from '../../../shared/material.imports';
 import { COMMON_IMPORTS } from '../../../shared/common.imports';
 import { GetProduct } from '../../../interface/product/get-product';
@@ -9,7 +9,8 @@ import { SnackbarService } from '../../../core/services/snackbar-service';
 import { CategoryService } from '../../../core/services/category-service';
 import { GlobalConstants } from '../../../shared/global-constants';
 import { MatListOption } from '@angular/material/list';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-all-products',
@@ -21,23 +22,28 @@ import { RouterLink } from '@angular/router';
   templateUrl: './all-products.html',
   styleUrl: './all-products.scss',
 })
-export class AllProducts implements OnInit {
+export class AllProducts implements OnInit, OnDestroy {
 
   @ViewChild('productsGrid', { static: false }) productsGrid!: ElementRef<HTMLElement>;
 
   products: GetProduct[] = [];
   allProducts: GetProduct[] = [];
+  featuredProducts: GetProduct[] = [];
   responseMessage: any;
   categories: GetCategory[] = [];
 
-  selectedCategory = 'Todos';
+  searchTerm: string = '';
+  selectedCategoryIds: number[] = [];
+  currentSort: string = 'default';
+  private querySub!: Subscription;
 
   constructor(
     private cdr: ChangeDetectorRef,
     private productService: ProductService,
     private ngxService: NgxUiLoaderService,
     private snackbarService: SnackbarService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private route: ActivatedRoute,
   ) { }
 
 
@@ -45,6 +51,21 @@ export class AllProducts implements OnInit {
     this.ngxService.start();
     this.loadProducts();
     this.loadCategories();
+
+    this.querySub = this.route.queryParamMap.subscribe(params => {
+      const newSearch = params.get('search') || '';
+      if (this.searchTerm !== newSearch || this.products.length === 0) {
+        this.searchTerm = newSearch;
+      }
+      if (this.products.length > 0) {
+        this.applyFilters();
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.querySub?.unsubscribe();
   }
 
   scrollCarousel(direction: number) {
@@ -61,9 +82,14 @@ export class AllProducts implements OnInit {
 
       // Filtra los productos activos (status === true) y los asigna a la variable products
       this.products = response.filter(product => product.status === true);
-      //asigna todos los productos a la variable allProducts
-      this.allProducts = [...this.products];
 
+      // Productos destacados para el carrusel (no afectado por filtros)
+      this.featuredProducts = this.products.filter(product =>
+        product.featured &&
+        product.status
+      );
+
+      this.applyFilters();
       this.cdr.markForCheck();
     }, (error: any) => {
       this.ngxService.stop();
@@ -100,48 +126,35 @@ export class AllProducts implements OnInit {
   }
 
   filterByCategory(selected: MatListOption[]) {
-    // Extrae los IDs de las categorías seleccionadas
-    const selectedIds = selected.map(option => option.value as number);
-
-    // Verifica si no hay ninguna categoría seleccionada
-    if (selectedIds.length === 0) {
-      // Restaura todos los productos (copia del mismo array)
-      this.allProducts = [...this.products];
-    } else {
-      // Filtra y muestra solo los productos cuya categoría esté seleccionada
-      this.allProducts = this.products.filter(product =>
-        selectedIds.includes(product.categoryId)
-      );
-    }
+    this.selectedCategoryIds = selected.map(option => option.value as number);
+    this.applyFilters();
   }
 
   sortBy(event: any) {
-    // Obtiene el valor seleccionado del evento de cambio
-    const val = event.target.value;
+    this.currentSort = event.target.value;
+    this.applyFilters();
+  }
 
-    // Copiamos la lista para no modificar la original directamente
-    let list = [...this.allProducts];
+  private applyFilters() {
+    let result = [...this.products];
 
-    if (val === 'price-asc') {
-      list.sort((a, b) => {
-        // orden ascendente por precio
-        return a.price - b.price;
-      });
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      result = result.filter(p => p.name.toLowerCase().includes(term));
     }
 
-    if (val === 'price-desc') {
-      list.sort((a, b) => {
-        // orden descendente por precio
-        return b.price - a.price;
-      });
+    if (this.selectedCategoryIds.length > 0) {
+      result = result.filter(p => this.selectedCategoryIds.includes(p.categoryId));
     }
 
-    if (val === 'discount') {
-      list.sort((a, b) => {
-        // mayor descuento primero
-        return b.discountPercentage - a.discountPercentage;
-      });
+    if (this.currentSort === 'price-asc') {
+      result.sort((a, b) => a.price - b.price);
+    } else if (this.currentSort === 'price-desc') {
+      result.sort((a, b) => b.price - a.price);
+    } else if (this.currentSort === 'discount') {
+      result.sort((a, b) => b.discountPercentage - a.discountPercentage);
     }
-    this.allProducts = list;
+
+    this.allProducts = result;
   }
 }

@@ -11,9 +11,9 @@
                 <a class="nav-link active" routerLink="/allProducts">Todos los productos</a>
             </nav>
 
-            <form class="search-form" role="search">
+            <form class="search-form" role="search" (ngSubmit)="onSearch()">
                 <mat-form-field appearance="outline" class="search-field" subscriptSizing="dynamic">
-                    <input matInput placeholder="Buscar productos" />
+                    <input matInput placeholder="Buscar productos" #searchInput />
                 </mat-form-field>
                 <button mat-stroked-button color="primary" class="search-button" type="submit">
                     Buscar

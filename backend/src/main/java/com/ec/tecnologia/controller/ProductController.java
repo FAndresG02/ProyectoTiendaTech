@@ -55,9 +55,9 @@ public class ProductController {
     }
 
     //admin/user
-    //Metodo para obtener productos por categoria
+    //Metodo para obtener productos por categoria, filtro para el obtener por categoria
     @GetMapping(path = "/getProductByCategory/{categoryId}")
-    public ResponseEntity<List<GetProductByCategoryDto>> getProductByCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<List<GetProductDto>> getProductByCategory(@PathVariable Long categoryId) {
 
         try {
 
@@ -65,6 +65,20 @@ public class ProductController {
 
         }catch (Exception e){
             log.error("Error al obtener los productos por categoria", e);
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //filtro para el navabar
+    @GetMapping(path = "/getProductByName/{name}")
+    public ResponseEntity<List<GetProductDto>> getProductByName(@PathVariable String name) {
+
+        try {
+
+            return productService.getProductByName(name);
+
+        } catch (Exception e) {
+            log.error("Error al obtener los productos por nombre", e);
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

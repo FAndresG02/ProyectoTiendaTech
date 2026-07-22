@@ -90,9 +90,7 @@
 
                     <div class="products-grid" #productsGrid>
 
-                        @for (product of filteredProducts; track product.id) {
-
-                        @if (product.featured && product.status) {
+                        @for (product of featuredProducts; track product.id) {
 
                         <mat-card class="product-card" appearance="outlined">
 
@@ -124,8 +122,6 @@
                             </mat-card-content>
 
                         </mat-card>
-
-                        }
 
                         } @empty {
                         <p class="empty-state">No hay productos disponibles.</p>

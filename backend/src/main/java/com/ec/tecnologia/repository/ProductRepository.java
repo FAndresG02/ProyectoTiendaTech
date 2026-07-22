@@ -33,16 +33,24 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
             "p.category.id, " +
             "p.category.name, " +
             "(select pi.url from ProductImageEntity pi where pi.productEntity.id = p.id and pi.isPrincipal = true)) " +
-            "from ProductEntity p")
-    List<GetProductDto> getAllProduct();
-
-    //Selecciona todos los productos que pertenezcan a una categoría específica y estén activos status='true'
-    @Query("select new com.ec.tecnologia.dto.product.GetProductByCategoryDto(" +
-            "p.id, " +
-            "p.name) " +
             "from ProductEntity p " +
-            "where p.category.id = :categoryId and p.status = true")
-    List<GetProductByCategoryDto> getProductsByCategory(@Param("categoryId") Long categoryId);
+            "where (:categoryId is null or p.category.id = :categoryId)")
+    List<GetProductDto> getProducts(@Param("categoryId") Long categoryId);
+
+    @Query("select new com.ec.tecnologia.dto.product.GetProductDto(" +
+            "p.id, " +
+            "p.name, " +
+            "p.description, " +
+            "p.price, " +
+            "p.status, " +
+            "p.discountPercentage, " +
+            "p.featured, " +
+            "p.category.id, " +
+            "p.category.name, " +
+            "(select pi.url from ProductImageEntity pi where pi.productEntity.id = p.id and pi.isPrincipal = true)) " +
+            "from ProductEntity p " +
+            "where lower(p.name) like lower(concat('%', :name, '%'))")
+    List<GetProductDto> getProductByName(@Param("name") String name);
 
     @Query("select new com.ec.tecnologia.dto.product.GetProductByIdDto(" +
             "p.id, p.name, p.description, p.price, p.status, " +

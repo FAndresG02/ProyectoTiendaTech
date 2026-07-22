@@ -29,10 +29,12 @@ export class Offer implements OnInit {
 
   products: GetProduct[] = [];
   filteredProducts: GetProduct[] = [];
+  featuredProducts: GetProduct[] = [];
   responseMessage: any;
   categories: GetCategory[] = [];
 
   selectedCategory = 'Todos';
+  currentSort: string = 'default';
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -67,6 +69,13 @@ export class Offer implements OnInit {
 
       // Inicializa filteredProducts y le asiga los productos con descuento
       this.filteredProducts = [...this.products];
+
+      // Productos destacados para el carrusel (no afectado por filtros)
+      this.featuredProducts = this.products.filter(product =>
+        product.featured &&
+        product.status &&
+        product.discountPercentage > 0
+      );
 
       this.cdr.markForCheck();
     }, (error: any) => {
@@ -107,43 +116,34 @@ export class Offer implements OnInit {
     const selectedIds = selected.map(option => option.value as number);
 
     if (selectedIds.length === 0) {
-      // Si no hay nada seleccionado, muestra todos
       this.filteredProducts = [...this.products];
     } else {
       this.filteredProducts = this.products.filter(product =>
         selectedIds.includes(product.categoryId)
       );
     }
+
+    if (this.currentSort !== 'default') {
+      this.applySort();
+    }
   }
 
-
   sortBy(event: any) {
-    // Obtiene el valor seleccionado del evento de cambio
-    const val = event.target.value;
+    this.currentSort = event.target.value;
+    this.applySort();
+  }
 
-    // Copiamos la lista para no modificar la original directamente
+  private applySort() {
     let list = [...this.filteredProducts];
 
-    if (val === 'price-asc') {
-      list.sort((a, b) => {
-        // orden ascendente por precio
-        return a.price - b.price;
-      });
+    if (this.currentSort === 'price-asc') {
+      list.sort((a, b) => a.price - b.price);
+    } else if (this.currentSort === 'price-desc') {
+      list.sort((a, b) => b.price - a.price);
+    } else if (this.currentSort === 'discount') {
+      list.sort((a, b) => b.discountPercentage - a.discountPercentage);
     }
 
-    if (val === 'price-desc') {
-      list.sort((a, b) => {
-        // orden descendente por precio
-        return b.price - a.price;
-      });
-    }
-
-    if (val === 'discount') {
-      list.sort((a, b) => {
-        // mayor descuento primero
-        return b.discountPercentage - a.discountPercentage;
-      });
-    }
     this.filteredProducts = list;
   }
 
