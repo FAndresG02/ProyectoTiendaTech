@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class SignupDto {
+public class UserSignupDto {
 
     @NotBlank(message = "El nombre no puede estar vacio")
     @Size(min = 3, max = 50,

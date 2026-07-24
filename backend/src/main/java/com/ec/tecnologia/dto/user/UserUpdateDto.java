@@ -1,11 +1,10 @@
 package com.ec.tecnologia.dto.user;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-public class UpdateUserDto {
+public class UserUpdateDto {
 
     @NotNull(message = "El id no puede ser nulo")
     @Positive(message = "El id debe ser mayor a 0")

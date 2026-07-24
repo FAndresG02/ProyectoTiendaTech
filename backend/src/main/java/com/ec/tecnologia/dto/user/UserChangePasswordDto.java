@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class ChangePasswordDto {
+public class UserChangePasswordDto {
 
     @Size(min = 4, message = "Mínimo 4 caracteres")
     @NotBlank(message = "La contraseña actual es obligatoria")

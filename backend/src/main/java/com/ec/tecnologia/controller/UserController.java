@@ -24,7 +24,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody SignupDto signupRequest) {
+    public ResponseEntity<?> signup(@Valid @RequestBody UserSignupDto signupRequest) {
         try {
 
             return userService.signUp(signupRequest);
@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginDto loginRequest) {
 
         try {
 
@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @GetMapping("/getUsers")
-    public ResponseEntity<List<UsersDto>> getUsers() {
+    public ResponseEntity<List<UserGetDto>> getUsers() {
 
         try {
 
@@ -63,7 +63,7 @@ public class UserController {
 
     //metodo para actualizar el status del usuario normal siendo administrador
     @PatchMapping("/update-status")
-    public ResponseEntity<?> updateStatus(@Valid @RequestBody UpdateStatusDto updateStatusRequest) {
+    public ResponseEntity<?> updateStatus(@Valid @RequestBody UserUpdateStatusDto updateStatusRequest) {
 
         try {
 
@@ -77,7 +77,7 @@ public class UserController {
 
     //Peticion post para cambiar la contraseña
     @PatchMapping(path = "/changePassword")
-    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDto changePasswordRequest) {
+    public ResponseEntity<?> changePassword(@Valid @RequestBody UserChangePasswordDto changePasswordRequest) {
 
         try {
 
@@ -105,7 +105,7 @@ public class UserController {
 
     //Cambiar un usuario a admin
     @PatchMapping(path = "/update-role")
-    public ResponseEntity<?> updateRole(@Valid @RequestBody UpdateRoleDto updateRoleRequest) {
+    public ResponseEntity<?> updateRole(@Valid @RequestBody UserUpdateRoleDto updateRoleRequest) {
 
         try {
 
@@ -119,7 +119,7 @@ public class UserController {
 
     //Actualizar datos de un usuario
     @PatchMapping(path = "/update-user")
-    public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUserDto updateUserRequest) {
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserUpdateDto updateUserRequest) {
 
         try {
 

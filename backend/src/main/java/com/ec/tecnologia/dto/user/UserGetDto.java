@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Data
-public class UsersDto {
+public class UserGetDto {
 
     @NotNull(message = "El id no puede ser nulo")
     private Long id;
@@ -33,8 +33,8 @@ public class UsersDto {
     @NotNull(message = "El status no puede ser nulo")
     private Boolean status;
 
-    public UsersDto(Long id, String name, String email,
-                    String contactNumber, Boolean status) {
+    public UserGetDto(Long id, String name, String email,
+                      String contactNumber, Boolean status) {
 
         this.id = id;
         this.name = name;

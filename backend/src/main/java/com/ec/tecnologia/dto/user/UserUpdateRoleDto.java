@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class UpdateRoleDto {
+public class UserUpdateRoleDto {
 
     @NotNull(message = "El id no puede ser nulo")
     @Positive(message = "El id debe ser mayor a 0")

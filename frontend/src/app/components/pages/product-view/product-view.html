@@ -58,7 +58,8 @@
                     <span class="rating-text">
                         {{ product.averageRating | number:'1.1-1' }} / 5
                         @if (product.totalReviews > 0) {
-                        <span class="reviews-count">({{ product.totalReviews }} {{ product.totalReviews === 1 ? 'opinión' : 'opiniones' }})</span>
+                        <span class="reviews-count">({{ product.totalReviews }} {{ product.totalReviews === 1 ?
+                            'opinión' : 'opiniones' }})</span>
                         }
                     </span>
                 </div>
@@ -66,7 +67,8 @@
                 <div class="product-price">
                     @if (product.discountPercentage > 0) {
                     <span class="price-original">${{ product.price | number:'1.2-2' }}</span>
-                    <span class="price-final">${{ calculateDiscountPrice(product.price, product.discountPercentage) }}</span>
+                    <span class="price-final">${{ calculateDiscountPrice(product.price, product.discountPercentage)
+                        }}</span>
                     <span class="discount-badge">-{{ product.discountPercentage }}%</span>
                     } @else {
                     <span class="price-final">${{ product.price | number:'1.2-2' }}</span>
@@ -83,7 +85,9 @@
                     @if (product.status !== undefined) {
                     <div class="meta-item">
                         <mat-icon>inventory_2</mat-icon>
-                        <span>Estado: <strong [class.available]="product.status" [class.unavailable]="!product.status">{{ product.status ? 'Disponible' : 'No disponible' }}</strong></span>
+                        <span>Estado: <strong [class.available]="product.status"
+                                [class.unavailable]="!product.status">{{ product.status ? 'Disponible' : 'No disponible'
+                                }}</strong></span>
                     </div>
                     }
                 </div>
@@ -183,7 +187,7 @@
 
                         <div class="products-grid" #productsGrid>
 
-                            @for (pro of allProducts; track pro.id) {
+                            @for (pro of featuredProducts; track pro.id) {
 
                             @if (pro.categoryName === this.product?.categoryName && pro.id !== this.productId) {
 
@@ -192,7 +196,9 @@
                                 @if (pro.discountPercentage > 0) {
                                 <span class="badge-discount">-{{ pro.discountPercentage }}%</span>
                                 }
+                                @if (pro.featured) {
                                 <span class="badge-featured">Destacado</span>
+                                }
 
                                 <!--
                             Muestra la imagen principal del producto.
@@ -206,7 +212,8 @@
 
                                 <mat-card-content>
                                     <span class="product-tag">{{ pro.categoryName }}</span>
-                                    <a [routerLink]="['/productView', pro.id]" style="text-decoration: none; color: inherit;">
+                                    <a [routerLink]="['/productView', pro.id]"
+                                        style="text-decoration: none; color: inherit;">
                                         <h6>{{ pro.name }}</h6>
                                     </a>
                                     <p>{{ pro.description }}</p>

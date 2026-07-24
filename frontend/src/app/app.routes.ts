@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
 import { Offer } from './components/pages/offer/offer';
-import { PublicLayout } from './components/layouts/public-layout/public-layout';
 import { MainPage } from './components/pages/main-page/main-page';
 import { AllProducts } from './components/pages/all-products/all-products';
 import { ProductView } from './components/pages/product-view/product-view';
+import { PublicLayout } from './components/common/layouts/public-layout/public-layout';
 
 export const routes: Routes = [
 

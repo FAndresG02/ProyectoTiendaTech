@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class UpdateStatusDto {
+public class UserUpdateStatusDto {
 
     @NotNull(message = "El id no puede ser nulo")
     @Positive(message = "El id debe ser mayor a 0")

@@ -43,7 +43,7 @@ public class UserService {
     JwtAuthenticationFilter jwtAuthenticationFilter;
 
     //Metodo para crear un nuevo usuario
-    public ResponseEntity<?> signUp(SignupDto signupRequest) {
+    public ResponseEntity<?> signUp(UserSignupDto signupRequest) {
 
         try {
 
@@ -77,7 +77,7 @@ public class UserService {
     //-----------------------------------------------------------------------------------------------------------------
 
     //Metodo para iniciar sesion despues de haber creado un nuevo usuario
-    public ResponseEntity<?> login(LoginDto loginRequest) {
+    public ResponseEntity<?> login(UserLoginDto loginRequest) {
 
         try {
 
@@ -130,7 +130,7 @@ public class UserService {
     //-----------------------------------------------------------------------------------------------------------------
 
     //Metodo para devolver los usuarios solo los campos definidos en el dto UsersDto
-    public ResponseEntity<List<UsersDto>> getUsers(){
+    public ResponseEntity<List<UserGetDto>> getUsers(){
 
         try {
 
@@ -152,7 +152,7 @@ public class UserService {
     //-----------------------------------------------------------------------------------------------------------------
 
     //metodo para actualizar el status del usuario normal siendo admin
-    public ResponseEntity<?> updateStatus(UpdateStatusDto updateStatusRequest){
+    public ResponseEntity<?> updateStatus(UserUpdateStatusDto updateStatusRequest){
         try {
 
             if (jwtAuthenticationFilter.isAdmin()) {
@@ -184,7 +184,7 @@ public class UserService {
     //-----------------------------------------------------------------------------------------------------------------
 
     //Metodo para cambiar la contrasenia
-    public ResponseEntity<?> changePassword(ChangePasswordDto changePasswordRequest){
+    public ResponseEntity<?> changePassword(UserChangePasswordDto changePasswordRequest){
 
         try {
 
@@ -286,7 +286,7 @@ public class UserService {
     //-----------------------------------------------------------------------------------------------------------------
 
     //Cambiar el role de cualquier usuario con permiso de un admin
-    public ResponseEntity<?> updateRole(UpdateRoleDto updateRoleRequest) {
+    public ResponseEntity<?> updateRole(UserUpdateRoleDto updateRoleRequest) {
 
         try {
 
@@ -316,7 +316,7 @@ public class UserService {
     //-----------------------------------------------------------------------------------------------------------------
 
     //Metodo para actualizar datos de un usuario
-    public ResponseEntity<?> updateUser(UpdateUserDto updateUserRequest) {
+    public ResponseEntity<?> updateUser(UserUpdateDto updateUserRequest) {
 
         try {
 
@@ -341,7 +341,7 @@ public class UserService {
         }
     }
 
-    private UserEntity validateUser(UpdateUserDto updateUserRequest){
+    private UserEntity validateUser(UserUpdateDto updateUserRequest){
 
         Optional<UserEntity> userEntityOptional = userRepository.findById(updateUserRequest.getId());
 

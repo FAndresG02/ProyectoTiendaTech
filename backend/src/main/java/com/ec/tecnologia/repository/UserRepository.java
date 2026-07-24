@@ -1,6 +1,6 @@
 package com.ec.tecnologia.repository;
 
-import com.ec.tecnologia.dto.user.UsersDto;
+import com.ec.tecnologia.dto.user.UserGetDto;
 import com.ec.tecnologia.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -34,7 +34,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     from UserEntity u
     where u.role = 'ROLE_USER'
     """)
-    List<UsersDto> getAllUser();
+    List<UserGetDto> getAllUser();
 
     @Transactional
     @Modifying

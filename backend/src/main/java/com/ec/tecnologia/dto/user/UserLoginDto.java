@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class LoginDto {
+public class UserLoginDto {
 
     @NotBlank(message = "El email no puede estar vacio")
     @Email(message = "El email no es valido")

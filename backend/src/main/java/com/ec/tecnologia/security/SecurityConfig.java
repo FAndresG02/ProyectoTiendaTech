@@ -56,6 +56,7 @@ public class SecurityConfig {
                                 "/product/getProducts",
                                 "/product/getProductByCategory/**",
                                 "/product/getProductById/**",
+                                "/product/getProductByName/**",
 
                                 "/category/getCategories"
 

@@ -9,7 +9,7 @@ import { SnackbarService } from '../../../core/services/snackbar-service';
 import { CategoryService } from '../../../core/services/category-service';
 import { GlobalConstants } from '../../../shared/global-constants';
 import { MatSelectionListChange } from '@angular/material/list';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-all-products',
@@ -35,6 +35,7 @@ export class AllProducts implements OnInit {
   categories: GetCategory[] = [];
 
   currentSort: string = 'default';
+  searchTerm: string = '';
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -42,24 +43,23 @@ export class AllProducts implements OnInit {
     private ngxService: NgxUiLoaderService,
     private snackbarService: SnackbarService,
     private categoryService: CategoryService,
+    private route: ActivatedRoute,
   ) { }
 
 
   ngOnInit(): void {
     this.ngxService.start();
-    this.loadProducts();
     this.loadCategories();
+    this.route.queryParams.subscribe(params => {
+      this.searchTerm = params['search'] || '';
+      this.loadProducts();
+    });
   }
 
   loadProducts() {
     this.productService.getProducts().subscribe((response: GetProduct[]) => {
-      this.ngxService.stop();
-
       // Filtra los productos activos (status === true) y los asigna a la variable products
       this.products = response.filter(product => product.status === true);
-      // Inicializa allProducts con todos los productos activos
-      // para no modificar la lista original y poder aplicar filtros/ordenamientos
-      this.allProducts = [...this.products];
 
       // Productos destacados para el carrusel (no afectado por filtros)
       this.featuredProducts = this.products.filter(product =>
@@ -67,7 +67,15 @@ export class AllProducts implements OnInit {
         product.status
       );
 
-      this.cdr.markForCheck();
+      // Si hay un término de búsqueda, filtra los productos por nombre, de lo contrario, 
+      // asigna todos los productos activos a allProducts
+      if (this.searchTerm) {
+        this.searchProducts(this.searchTerm);
+      } else {
+        this.ngxService.stop();
+        this.allProducts = [...this.products];
+        this.cdr.markForCheck();
+      }
     }, (error: any) => {
       this.ngxService.stop();
 
@@ -78,6 +86,29 @@ export class AllProducts implements OnInit {
       }
 
       this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
+    });
+  }
+
+  // Método para buscar productos por nombre
+  searchProducts(name: string) {
+    this.productService.getProductByName(name).subscribe({
+      next: (response: GetProduct[]) => {
+        this.ngxService.stop();
+        this.allProducts = response.filter(product => product.status === true);
+        this.applySort();
+        this.cdr.markForCheck();
+      },
+      error: (error: any) => {
+        this.ngxService.stop();
+
+        if (error.error?.message) {
+          this.responseMessage = error.error?.message;
+        } else {
+          this.responseMessage = GlobalConstants.genericErrorMessage;
+        }
+
+        this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
+      }
     });
   }
 

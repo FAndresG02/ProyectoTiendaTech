@@ -24,6 +24,7 @@ export class ProductView implements OnInit {
   productId!: number;
   product?: GetProductById;
   allProducts?: GetProduct[];
+  featuredProducts: GetProduct[] = [];
   responseMessage: any;
   currentSlide = 0;
 
@@ -75,7 +76,17 @@ export class ProductView implements OnInit {
     this.productService.getProducts().subscribe((response: GetProduct[]) => {
       this.ngxService.stop();
       this.allProducts = response;
+
+      // Productos destacados para el carrusel (no afectado por filtros)
+      //para mostrar solo los productos destacados con descuento y activos dentro del carrusel
+      this.featuredProducts = this.allProducts.filter(product =>
+        product.status
+      );
+
+      console.log('Productos destacados cargados:', this.featuredProducts);
+
       this.cdr.markForCheck();
+
     }, (error: any) => {
       this.ngxService.stop();
 
