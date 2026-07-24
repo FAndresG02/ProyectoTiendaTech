@@ -19,6 +19,15 @@ export class ProductService {
     return this.http.get<GetProduct[]>(`${this.url}/getProducts`);
   }
 
+  //// Obtiene la información completa de un producto mediante su identificador.
+  getProductByCategory(categoryId: number): Observable<GetProduct[]> {
+    return this.http.get<GetProduct[]>(`${this.url}/getProductByCategory/${categoryId}`);
+  }
+
+  getProductByName(name: string): Observable<GetProduct[]> {
+    return this.http.get<GetProduct[]>(`${this.url}/getProductByName/${name}`);
+  }
+
 
   // Obtiene la información completa de un producto mediante su identificador.
   getProductById(id: number): Observable<GetProductById> {

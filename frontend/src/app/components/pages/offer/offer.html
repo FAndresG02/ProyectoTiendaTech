@@ -5,10 +5,18 @@
 
             <h2>Categorías</h2>
 
-            <mat-selection-list #categorys (selectionChange)="filterByCategory(categorys.selectedOptions.selected)">
+            <mat-selection-list #categorys [multiple]="false" (selectionChange)="filterByCategory($event)">
+
+                <mat-list-option [value]="0" [selected]="true">
+                    Todos
+                </mat-list-option>
+
                 @for (category of this.categories; track category.id) {
-                <mat-list-option [value]="category.id">{{category.name}}</mat-list-option>
+                <mat-list-option [value]="category.id">
+                    {{ category.name }}
+                </mat-list-option>
                 }
+
             </mat-selection-list>
 
         </div>
@@ -23,7 +31,7 @@
                     <p class="page-sub">Los mejores precios en tecnología</p>
 
 
-                    <select (change)="sortBy($event)">
+                    <select #sortSelect (change)="sortBy($event)">
                         <option value="default">Ordenar por</option>
                         <option value="price-asc">Menor precio</option>
                         <option value="price-desc">Mayor precio</option>

@@ -9,8 +9,8 @@ import { GetProduct } from '../../../interface/product/get-product';
 import { COMMON_IMPORTS } from '../../../shared/shared';
 import { CategoryService } from '../../../core/services/category-service';
 import { GetCategory } from '../../../interface/category/get-category';
-import { MatListOption } from '@angular/material/list';
 import { RouterLink } from '@angular/router';
+import { MatSelectionListChange } from '@angular/material/list';
 
 @Component({
   selector: 'app-offer',
@@ -25,7 +25,10 @@ import { RouterLink } from '@angular/router';
 })
 export class Offer implements OnInit {
 
+  // Variable de referencia al elemento grid de productos para el carrusel
   @ViewChild('productsGrid', { static: false }) productsGrid!: ElementRef<HTMLElement>;
+  // Variable de referencia al elemento select para el ordenamiento
+  @ViewChild('sortSelect', { static: false }) sortSelect!: ElementRef<HTMLSelectElement>;
 
   products: GetProduct[] = [];
   filteredProducts: GetProduct[] = [];
@@ -50,13 +53,6 @@ export class Offer implements OnInit {
     this.loadCategories();
   }
 
-  scrollCarousel(direction: number) {
-    const grid = this.productsGrid?.nativeElement;
-    if (grid) {
-      const scrollAmount = grid.clientWidth * 0.8;
-      grid.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-    }
-  }
 
   loadProducts() {
     this.productService.getProducts().subscribe((response: GetProduct[]) => {
@@ -68,9 +64,12 @@ export class Offer implements OnInit {
       );
 
       // Inicializa filteredProducts y le asiga los productos con descuento
+      //esto con el objetivo de no modificar la lista original de productos y poder aplicar filtros 
+      // y ordenamientos sobre filteredProducts
       this.filteredProducts = [...this.products];
 
       // Productos destacados para el carrusel (no afectado por filtros)
+      //para mostrar solo los productos destacados con descuento y activos dentro del carrusel
       this.featuredProducts = this.products.filter(product =>
         product.featured &&
         product.status &&
@@ -112,27 +111,61 @@ export class Offer implements OnInit {
     });
   }
 
-  filterByCategory(selected: MatListOption[]) {
-    const selectedIds = selected.map(option => option.value as number);
+  filterByCategory(event: MatSelectionListChange) {
+    // Reinicia el ordenamiento a "default" y actualiza el valor del select de ordenamiento
+    this.currentSort = 'default';
 
-    if (selectedIds.length === 0) {
+    // Reinicia el valor del select de ordenamiento a "default" si existe
+    if (this.sortSelect) this.sortSelect.nativeElement.value = 'default';
+
+    // Obtiene la opción seleccionada del evento de cambio de selección
+    const option = event.options[0];
+
+    // Si no hay opción seleccionada o la opción seleccionada es "Todos" (valor 0), se muestran todos los productos
+    if (!option?.selected || option.value === 0) {
       this.filteredProducts = [...this.products];
-    } else {
-      this.filteredProducts = this.products.filter(product =>
-        selectedIds.includes(product.categoryId)
-      );
+      this.cdr.markForCheck();
+      return;
     }
 
-    if (this.currentSort !== 'default') {
-      this.applySort();
-    }
+    this.ngxService.start();
+
+    // Filtra los productos por la categoría seleccionada
+    this.productService.getProductByCategory(option.value).subscribe({
+      next: (response: GetProduct[]) => {
+        this.ngxService.stop();
+        // Filtra los productos para mostrar solo aquellos con descuento y activos
+        this.filteredProducts = response.filter(product =>
+          product.discountPercentage > 0 && product.status === true
+        );
+        // Aplica el ordenamiento actual después de filtrar
+        this.applySort();
+        this.cdr.markForCheck();
+      },
+      error: (error: any) => {
+        this.ngxService.stop();
+
+        if (error.error?.message) {
+          this.responseMessage = error.error?.message;
+        } else {
+          this.responseMessage = GlobalConstants.genericErrorMessage;
+        }
+
+        this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
+      }
+    });
   }
 
+
+  // Método para manejar el cambio de ordenamiento
   sortBy(event: any) {
+    // Actualiza el criterio de ordenamiento basado en la selección del usuario
     this.currentSort = event.target.value;
+    // Aplica el ordenamiento a la lista de productos filtrados
     this.applySort();
   }
 
+  // Método privado para aplicar el ordenamiento a la lista de productos filtrados
   private applySort() {
     let list = [...this.filteredProducts];
 
@@ -145,6 +178,15 @@ export class Offer implements OnInit {
     }
 
     this.filteredProducts = list;
+  }
+
+  // Método para desplazar el carrusel de productos hacia la izquierda o derecha
+  scrollCarousel(direction: number) {
+    const grid = this.productsGrid?.nativeElement;
+    if (grid) {
+      const scrollAmount = grid.clientWidth * 0.8;
+      grid.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+    }
   }
 
 }

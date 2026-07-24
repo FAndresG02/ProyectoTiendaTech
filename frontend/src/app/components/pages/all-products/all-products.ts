@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MATERIAL_IMPORTS } from '../../../shared/material.imports';
 import { COMMON_IMPORTS } from '../../../shared/common.imports';
 import { GetProduct } from '../../../interface/product/get-product';
@@ -8,9 +8,8 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from '../../../core/services/snackbar-service';
 import { CategoryService } from '../../../core/services/category-service';
 import { GlobalConstants } from '../../../shared/global-constants';
-import { MatListOption } from '@angular/material/list';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { MatSelectionListChange } from '@angular/material/list';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-all-products',
@@ -22,9 +21,12 @@ import { Subscription } from 'rxjs';
   templateUrl: './all-products.html',
   styleUrl: './all-products.scss',
 })
-export class AllProducts implements OnInit, OnDestroy {
+export class AllProducts implements OnInit {
 
+  // Variable de referencia al elemento grid de productos para el carrusel
   @ViewChild('productsGrid', { static: false }) productsGrid!: ElementRef<HTMLElement>;
+  // Variable de referencia al elemento select para el ordenamiento
+  @ViewChild('sortSelect', { static: false }) sortSelect!: ElementRef<HTMLSelectElement>;
 
   products: GetProduct[] = [];
   allProducts: GetProduct[] = [];
@@ -32,10 +34,7 @@ export class AllProducts implements OnInit, OnDestroy {
   responseMessage: any;
   categories: GetCategory[] = [];
 
-  searchTerm: string = '';
-  selectedCategoryIds: number[] = [];
   currentSort: string = 'default';
-  private querySub!: Subscription;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -43,7 +42,6 @@ export class AllProducts implements OnInit, OnDestroy {
     private ngxService: NgxUiLoaderService,
     private snackbarService: SnackbarService,
     private categoryService: CategoryService,
-    private route: ActivatedRoute,
   ) { }
 
 
@@ -51,29 +49,6 @@ export class AllProducts implements OnInit, OnDestroy {
     this.ngxService.start();
     this.loadProducts();
     this.loadCategories();
-
-    this.querySub = this.route.queryParamMap.subscribe(params => {
-      const newSearch = params.get('search') || '';
-      if (this.searchTerm !== newSearch || this.products.length === 0) {
-        this.searchTerm = newSearch;
-      }
-      if (this.products.length > 0) {
-        this.applyFilters();
-        this.cdr.markForCheck();
-      }
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.querySub?.unsubscribe();
-  }
-
-  scrollCarousel(direction: number) {
-    const grid = this.productsGrid?.nativeElement;
-    if (grid) {
-      const scrollAmount = grid.clientWidth * 0.8;
-      grid.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-    }
   }
 
   loadProducts() {
@@ -82,6 +57,9 @@ export class AllProducts implements OnInit, OnDestroy {
 
       // Filtra los productos activos (status === true) y los asigna a la variable products
       this.products = response.filter(product => product.status === true);
+      // Inicializa allProducts con todos los productos activos
+      // para no modificar la lista original y poder aplicar filtros/ordenamientos
+      this.allProducts = [...this.products];
 
       // Productos destacados para el carrusel (no afectado por filtros)
       this.featuredProducts = this.products.filter(product =>
@@ -89,7 +67,6 @@ export class AllProducts implements OnInit, OnDestroy {
         product.status
       );
 
-      this.applyFilters();
       this.cdr.markForCheck();
     }, (error: any) => {
       this.ngxService.stop();
@@ -125,36 +102,82 @@ export class AllProducts implements OnInit, OnDestroy {
     });
   }
 
-  filterByCategory(selected: MatListOption[]) {
-    this.selectedCategoryIds = selected.map(option => option.value as number);
-    this.applyFilters();
+  filterByCategory(event: MatSelectionListChange) {
+    // Reinicia el ordenamiento a "default" y actualiza el valor del select de ordenamiento
+    this.currentSort = 'default';
+
+    // Reinicia el valor del select de ordenamiento a "default" si existe
+    if (this.sortSelect) this.sortSelect.nativeElement.value = 'default';
+
+    // Obtiene la opción seleccionada del evento de cambio de selección
+    const option = event.options[0];
+
+    // Si no hay opción seleccionada o la opción seleccionada es "Todos" (valor 0), se muestran todos los productos
+    if (!option?.selected || option.value === 0) {
+      this.allProducts = [...this.products];
+      this.cdr.markForCheck();
+      return;
+    }
+
+    this.ngxService.start();
+
+    // Filtra los productos por la categoría seleccionada
+    this.productService.getProductByCategory(option.value).subscribe({
+      next: (response: GetProduct[]) => {
+        this.ngxService.stop();
+        // Filtra los productos para mostrar solo aquellos activos
+        this.allProducts = response.filter(product =>
+          product.status === true
+        );
+        // Aplica el ordenamiento actual después de filtrar
+        this.applySort();
+        this.cdr.markForCheck();
+      },
+      error: (error: any) => {
+        this.ngxService.stop();
+
+        if (error.error?.message) {
+          this.responseMessage = error.error?.message;
+        } else {
+          this.responseMessage = GlobalConstants.genericErrorMessage;
+        }
+
+        this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
+      }
+    });
   }
 
+  // Método para manejar el cambio de ordenamiento
   sortBy(event: any) {
+    // Actualiza el criterio de ordenamiento basado en la selección del usuario
     this.currentSort = event.target.value;
-    this.applyFilters();
+    // Aplica el ordenamiento a la lista de productos filtrados
+    this.applySort();
   }
 
-  private applyFilters() {
-    let result = [...this.products];
-
-    if (this.searchTerm) {
-      const term = this.searchTerm.toLowerCase();
-      result = result.filter(p => p.name.toLowerCase().includes(term));
-    }
-
-    if (this.selectedCategoryIds.length > 0) {
-      result = result.filter(p => this.selectedCategoryIds.includes(p.categoryId));
-    }
+  // Método privado para aplicar el ordenamiento a la lista de productos filtrados
+  private applySort() {
+    let list = [...this.allProducts];
 
     if (this.currentSort === 'price-asc') {
-      result.sort((a, b) => a.price - b.price);
+      list.sort((a, b) => a.price - b.price);
     } else if (this.currentSort === 'price-desc') {
-      result.sort((a, b) => b.price - a.price);
+      list.sort((a, b) => b.price - a.price);
     } else if (this.currentSort === 'discount') {
-      result.sort((a, b) => b.discountPercentage - a.discountPercentage);
+      list.sort((a, b) => b.discountPercentage - a.discountPercentage);
     }
 
-    this.allProducts = result;
+    this.allProducts = list;
   }
+
+  // Método para desplazar el carrusel de productos hacia la izquierda o derecha
+  scrollCarousel(direction: number) {
+    const grid = this.productsGrid?.nativeElement;
+    if (grid) {
+      const scrollAmount = grid.clientWidth * 0.8;
+      grid.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+    }
+  }
+
+
 }
