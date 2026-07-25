@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     /// Devuelve todos los usuarios con rol USER en formato DTO UsersDto
     @Query("""
-    select new com.ec.tecnologia.dto.user.UsersDto(
+    select new com.ec.tecnologia.dto.user.UserGetDto(
         u.id,
         u.name,
         u.email,
