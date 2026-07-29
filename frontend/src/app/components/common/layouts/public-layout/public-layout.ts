@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { COMMON_IMPORTS } from '../../../../shared/common.imports';
 import { MATERIAL_IMPORTS } from '../../../../shared/material.imports';
 import { UserService } from '../../../../core/services/user-service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Signup } from '../../dialog/signup/signup';
+import { Login } from '../../dialog/login/login';
+import { AuthService } from '../../../../core/services/auth-service';
 
 @Component({
   selector: 'app-public-layout',
@@ -18,6 +20,9 @@ import { Signup } from '../../dialog/signup/signup';
   styleUrl: './public-layout.scss',
 })
 export class PublicLayout implements OnInit {
+
+  // Inyecta el AuthService y expone el signal para usarlo en el HTML
+  authService = inject(AuthService);
 
   constructor(
     private router: Router,
@@ -45,6 +50,21 @@ export class PublicLayout implements OnInit {
     dialogConfig.width = '400px';
     // dialogConfig.data = { /* datos que quieras pasar al diálogo */ };
     this.dialog.open(Signup, dialogConfig);
+  }
+
+  // Lógica para manejar la acción de inicio de sesion
+  handleLoginAction() {
+    // Aquí puedes abrir un diálogo de olvido de contraseña o redirigir a una página de olvido de contraseña
+    const dialogConfig = new MatDialogConfig();
+    // Configura el diálogo según tus necesidades
+    dialogConfig.width = '400px';
+    // dialogConfig.data = { /* datos que quieras pasar al diálogo */ };
+    this.dialog.open(Login, dialogConfig);
+  }
+
+  handleLogout() {
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 
 }

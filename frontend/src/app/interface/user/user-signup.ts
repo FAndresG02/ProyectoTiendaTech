@@ -5,6 +5,3 @@ export interface UserSignup {
     password: string;
 }
 
-export interface UserSignupResponse {
-    message: string;
-}

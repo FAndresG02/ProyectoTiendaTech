@@ -1,0 +1,59 @@
+<!-- Header con ícono de usuario -->
+<div class="signup-header">
+    <button class="close-btn" mat-icon-button mat-dialog-close>
+        <mat-icon>close</mat-icon>
+    </button>
+    <div class="avatar-wrapper">
+        <mat-icon class="avatar-icon">person</mat-icon>
+    </div>
+    <h2 class="signup-title">Crear cuenta</h2>
+</div>
+
+<mat-dialog-content>
+    <form [formGroup]="loginForm" (ngSubmit)="handleSubmit()">
+        <div class="form-fields">
+
+            <mat-form-field appearance="outline">
+                <mat-icon matPrefix>email_outline</mat-icon>
+                <mat-label>Correo Electrónico</mat-label>
+                <input matInput formControlName="email" required>
+                <mat-error>
+                    @if (loginForm.controls['email'].touched) {
+                    @if (loginForm.controls['email'].hasError('required')) {
+                    <span>El correo electrónico es obligatorio</span>
+                    }
+                    @if (loginForm.controls['email'].hasError('email')) {
+                    <span>El correo electrónico no es válido</span>
+                    }
+                    }
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-icon matPrefix>lock_outline</mat-icon>
+                <mat-label>Contraseña</mat-label>
+                <input matInput formControlName="password" [type]="password ? 'password' : 'text'">
+                <button type="button" mat-icon-button matSuffix (click)="password = !password">
+                    <mat-icon>{{ password ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error>
+                    @if (loginForm.controls['password'].touched) {
+                    La contraseña es obligatoria
+                    }
+                </mat-error>
+            </mat-form-field>
+
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button class="btn-cancel" mat-stroked-button mat-dialog-close>
+        <mat-icon>close</mat-icon>
+        Cancelar
+    </button>
+    <button class="btn-submit" mat-raised-button type="submit" (click)="handleSubmit()">
+        <mat-icon>person_add</mat-icon>
+        Iniciar Sesión
+    </button>
+</mat-dialog-actions>

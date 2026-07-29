@@ -7,7 +7,7 @@ import { UserService } from '../../../../core/services/user-service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from '../../../../core/services/snackbar-service';
-import { UserSignup, UserSignupResponse } from '../../../../interface/user/user-signup';
+import { UserSignup } from '../../../../interface/user/user-signup';
 import { GlobalConstants } from '../../../../shared/global-constants';
 
 @Component({
@@ -98,29 +98,28 @@ export class Signup implements OnInit {
       return;
     }
 
-    const formValue = this.signupForm.value;
-
     const formData: UserSignup = {
-      name: formValue.name,
-      email: formValue.email,
-      contactNumber: formValue.contactNumber,
-      password: formValue.password
+      name: this.signupForm.value.name,
+      email: this.signupForm.value.email,
+      contactNumber: this.signupForm.value.contactNumber,
+      password: this.signupForm.value.password
     };
 
-    this.userService.signup(formData).subscribe((response: UserSignupResponse) => {
+    this.userService.signup(formData).subscribe((response: any) => {
 
       // Detener el spinner de carga
       this.ngxService.stop();
-      // Cerrar el diálogo después de mostrar el mensaje
-      this.dialogRef.close();
       // Obtener el mensaje de respuesta del backend
       this.responseMessage = response?.message;
-      // Mostrar el mensaje de éxito al usuario
+      // Mostrar el mensaje de éxito en la consola
       console.log(this.responseMessage);
-      this.snackbarService.openSnackBar(this.responseMessage, "success");
+      this.snackbarService.openSnackBar(this.responseMessage, "Registro exitoso");
       // Redirigir al usuario a la página de inicio de sesión después del registro exitoso
       this.router.navigate(['/']);
-    },      // Error
+      // Cerrar el diálogo después de mostrar el mensaje
+      // el dialogo hace referencia a este componente
+      this.dialogRef.close();
+    },      
       (error) => {
         // Detener el spinner de carga
         this.ngxService.stop();

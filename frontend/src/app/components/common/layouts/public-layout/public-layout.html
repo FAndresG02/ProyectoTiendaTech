@@ -21,12 +21,29 @@
             </form>
 
             <div class="toolbar-actions">
-                <button mat-stroked-button class="login-button" type="button">
+                @if (authService.isLoggedIn()) {
+                <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="Cuenta">
+                    <mat-icon>account_circle</mat-icon>
+                </button>
+                <mat-menu #userMenu="matMenu">
+                    <button mat-menu-item routerLink="/profile">
+                        <mat-icon>person</mat-icon>
+                        <span>Mi perfil</span>
+                    </button>
+                    <button mat-menu-item (click)="handleLogout()">
+                        <mat-icon>logout</mat-icon>
+                        <span>Cerrar sesión</span>
+                    </button>
+                </mat-menu>
+                } @else {
+                <button mat-stroked-button class="login-button" type="button" (click)="handleLoginAction()">
                     Iniciar Sesión
                 </button>
                 <button mat-flat-button class="register-button" type="button" (click)="handleSignupAction()">
                     Registrarse
                 </button>
+                }
+
                 <button mat-icon-button class="cart-button" type="button" aria-label="Carrito">
                     <mat-icon>shopping_cart</mat-icon>
                 </button>

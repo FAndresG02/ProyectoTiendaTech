@@ -36,13 +36,15 @@
         <mat-icon matPrefix>email_outline</mat-icon>
         <mat-label>Correo Electrónico</mat-label>
         <input matInput formControlName="email" required>
-        <mat-error *ngIf="signupForm.controls['email'].touched">
-          <span *ngIf="signupForm.controls['email'].hasError('required')">
-            El correo electrónico es obligatorio
-          </span>
-          <span *ngIf="signupForm.controls['email'].hasError('email')">
-            El correo electrónico no es válido
-          </span>
+        <mat-error>
+          @if (signupForm.controls['email'].touched) {
+          @if (signupForm.controls['email'].hasError('required')) {
+          <span>El correo electrónico es obligatorio</span>
+          }
+          @if (signupForm.controls['email'].hasError('email')) {
+          <span>El correo electrónico no es válido</span>
+          }
+          }
         </mat-error>
       </mat-form-field>
 
@@ -50,13 +52,15 @@
         <mat-icon matPrefix>phone_outline</mat-icon>
         <mat-label>Número de Contacto</mat-label>
         <input matInput formControlName="contactNumber" required>
-        <mat-error *ngIf="signupForm.controls['contactNumber'].touched">
-          <span *ngIf="signupForm.controls['contactNumber'].hasError('required')">
-            El número de contacto es obligatorio
-          </span>
-          <span *ngIf="signupForm.controls['contactNumber'].hasError('pattern')">
-            El número no es válido
-          </span>
+        <mat-error>
+          @if (signupForm.controls['contactNumber'].touched) {
+          @if (signupForm.controls['contactNumber'].hasError('required')) {
+          <span>El número de contacto es obligatorio</span>
+          }
+          @if (signupForm.controls['contactNumber'].hasError('pattern')) {
+          <span>El número no es válido</span>
+          }
+          }
         </mat-error>
       </mat-form-field>
 
@@ -67,8 +71,10 @@
         <button type="button" mat-icon-button matSuffix (click)="password = !password">
           <mat-icon>{{ password ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
-        <mat-error *ngIf="signupForm.controls['password'].touched">
+        <mat-error>
+          @if (signupForm.controls['password'].touched) {
           La contraseña es obligatoria
+          }
         </mat-error>
       </mat-form-field>
 
@@ -79,11 +85,15 @@
         <button type="button" mat-icon-button matSuffix (click)="confirmPassword = !confirmPassword">
           <mat-icon>{{ confirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
-        <mat-error *ngIf="signupForm.controls['confirmPassword'].touched">
+        <mat-error>
+          @if (signupForm.controls['confirmPassword'].touched) {
           La confirmación es obligatoria
+          }
         </mat-error>
-        <mat-hint *ngIf="signupForm.controls['confirmPassword'].touched && validateSubmit()">
+        <mat-hint>
+          @if (signupForm.controls['confirmPassword'].touched && validateSubmit()) {
           <span class="password-mismatch">Las contraseñas no coinciden</span>
+          }
         </mat-hint>
       </mat-form-field>
 

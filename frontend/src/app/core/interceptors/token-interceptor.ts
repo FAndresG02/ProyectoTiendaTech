@@ -3,6 +3,14 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 
+// Este interceptor de token se encarga de agregar el token de autenticación a las solicitudes HTTP salientes 
+// y manejar los errores de autenticación.
+//El objetivo de este interceptor es centralizar el manejo de la autenticación en todas las peticiones HTTP de la 
+//aplicación. Para ello, agrega automáticamente el token JWT almacenado en el navegador a la cabecera Authorization 
+//de cada solicitud enviada al backend y, además, detecta respuestas de error relacionadas con la autenticación 
+//(401 Unauthorized y 403 Forbidden). Cuando ocurre alguno de estos errores, elimina la información de la 
+//sesión del usuario y lo redirige al inicio de sesión, evitando que cada componente tenga que implementar 
+//esta lógica de forma individual y garantizando un manejo uniforme de la seguridad en toda la aplicación.
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
 
   //Así se inyectan servicios en interceptoras funcionales
