@@ -20,33 +20,54 @@
                 </button>
             </form>
 
+            <!-- Contenedor de las acciones de la barra de herramientas -->
             <div class="toolbar-actions">
+                <!-- Verifica si el usuario está autenticado -->
                 @if (authService.isLoggedIn()) {
+                <!-- Botón de icono que abre el menú de usuario -->
                 <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="Cuenta">
+                    <!-- Icono que representa la cuenta del usuario -->
                     <mat-icon>account_circle</mat-icon>
                 </button>
+                <!-- Menú desplegable asociado al botón de usuario -->
                 <mat-menu #userMenu="matMenu">
+                    <!-- Botón del menú que navega hacia el perfil -->
                     <button mat-menu-item routerLink="/profile">
+                        <!-- Icono que representa el perfil del usuario -->
                         <mat-icon>person</mat-icon>
+                        <!-- Texto que indica la opción "Mi perfil" -->
                         <span>Mi perfil</span>
                     </button>
+                    <!-- Botón del menú que ejecuta el cierre de sesión -->
                     <button mat-menu-item (click)="handleLogout()">
+                        <!-- Icono que representa el cierre de sesión -->
                         <mat-icon>logout</mat-icon>
+                        <!-- Texto que indica la opción "Cerrar sesión" -->
                         <span>Cerrar sesión</span>
                     </button>
+                    <!-- Cierre del menú de usuario -->
                 </mat-menu>
+                <!-- Caso contrario: el usuario no está autenticado -->
                 } @else {
+                <!-- Botón para iniciar sesión -->
                 <button mat-stroked-button class="login-button" type="button" (click)="handleLoginAction()">
+                    <!-- Texto que indica la acción de iniciar sesión -->
                     Iniciar Sesión
                 </button>
+                <!-- Botón para registrarse -->
                 <button mat-flat-button class="register-button" type="button" (click)="handleSignupAction()">
+                    <!-- Texto que indica la acción de registrarse -->
                     Registrarse
                 </button>
+                <!-- Cierre del bloque condicional @if/@else -->
                 }
 
+                <!-- Botón de icono para acceder al carrito de compras -->
                 <button mat-icon-button class="cart-button" type="button" aria-label="Carrito">
+                    <!-- Icono que representa el carrito de compras -->
                     <mat-icon>shopping_cart</mat-icon>
                 </button>
+                <!-- Cierre del contenedor de acciones de la barra de herramientas -->
             </div>
 
         </mat-toolbar>

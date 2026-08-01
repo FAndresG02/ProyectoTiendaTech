@@ -1,0 +1,16 @@
+<!-- message.html -->
+<mat-dialog-content class="message-content">
+    <div class="message-icon">
+        <mat-icon>info_outline</mat-icon>
+    </div>
+
+    <h2 class="message-title">{{ data.title }}</h2>
+
+    <p class="message-text">{{ data.message }}</p>
+
+    <mat-dialog-actions class="message-actions">
+        <button mat-flat-button class="message-btn" (click)="dialogRef.close()">
+            {{ data.confirmText || 'Entendido' }}
+        </button>
+    </mat-dialog-actions>
+</mat-dialog-content>

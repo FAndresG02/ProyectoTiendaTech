@@ -21,16 +21,16 @@ import { AuthService } from '../../../../core/services/auth-service';
 })
 export class PublicLayout implements OnInit {
 
-  // Inyecta el AuthService y expone el signal para usarlo en el HTML
-  authService = inject(AuthService);
 
   constructor(
+    //Inyección de AuthService para manejar la autenticación del usuario
+    public authService: AuthService,
+    //Inyección de Router para manejar la navegación entre páginas
     private router: Router,
     //Inyección de MatDialog para abrir diálogos modales
     private dialog: MatDialog,
     //Inyección de UserService para verificar el token del usuario al cargar la página de inicio
     private userService: UserService,
-    //Inyección de Router para redirigir al usuario a otras páginas si es necesario
   ) { }
 
   ngOnInit(): void {
@@ -54,7 +54,7 @@ export class PublicLayout implements OnInit {
 
   // Lógica para manejar la acción de inicio de sesion
   handleLoginAction() {
-    // Aquí puedes abrir un diálogo de olvido de contraseña o redirigir a una página de olvido de contraseña
+    // Aquí puedes abrir un diálogo de olvido de inicio de sesion
     const dialogConfig = new MatDialogConfig();
     // Configura el diálogo según tus necesidades
     dialogConfig.width = '400px';

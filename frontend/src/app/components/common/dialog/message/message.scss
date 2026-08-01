@@ -1,0 +1,93 @@
+// ─── Contenido del diálogo ────────────────────────────────────────────────
+.message-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px 32px 8px !important;
+  overflow: hidden;
+
+  // Ícono circular con degradado de la marca
+  .message-icon {
+    width: 72px;
+    height: 72px;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0046be, #2563eb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(0, 70, 190, 0.3);
+    animation: message-pop 0.35s ease;
+
+    .mat-icon {
+      font-size: 38px;
+      width: 38px;
+      height: 38px;
+      color: #fff;
+    }
+  }
+
+  // Título del mensaje
+  .message-title {
+    margin: 0 0 12px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e293b;
+    letter-spacing: -0.3px;
+    line-height: 1.3;
+  }
+
+  // Cuerpo del mensaje
+  .message-text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #64748b;
+    max-width: 340px;
+  }
+
+  // Botón de acción
+  .message-actions {
+    width: 100%;
+    padding: 28px 0 8px !important;
+    display: flex;
+    justify-content: center;
+
+    .message-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #0046be, #2563eb);
+      color: #fff;
+      border-radius: 10px;
+      padding: 6px 32px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      transition: transform 0.2s, box-shadow 0.2s;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 70, 190, 0.35);
+      }
+    }
+  }
+
+  // Responsive en pantallas pequeñas
+  @media (max-width: 599px) {
+    padding: 32px 20px 8px !important;
+  }
+}
+
+// Animación de entrada del ícono
+@keyframes message-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

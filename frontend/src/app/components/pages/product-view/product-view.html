@@ -140,7 +140,9 @@
         <div class="product-reviews">
             <div class="reviews-header">
                 <h2>Comentarios de clientes</h2>
-                <button class="btn-add-review" type="button">Agregar Reseña</button>
+                <button class="btn-add-review" type="button" (click)="handleAddReview()">
+                    Agregar Reseña
+                </button>
             </div>
 
             @if (product) {

@@ -8,6 +8,9 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from '../../../core/services/snackbar-service';
 import { GlobalConstants } from '../../../shared/global-constants';
 import { GetProduct } from '../../../interface/product/get-product';
+import { AuthService } from '../../../core/services/auth-service';
+import { MatDialog } from '@angular/material/dialog';
+import { Message } from '../../common/dialog/message/message';
 
 @Component({
   selector: 'app-product-view',
@@ -29,11 +32,13 @@ export class ProductView implements OnInit {
   currentSlide = 0;
 
   constructor(
+    public authService: AuthService,
     private route: ActivatedRoute,
     private productService: ProductService,
     private ngxService: NgxUiLoaderService,
     private snackbarService: SnackbarService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private dialog: MatDialog
   ) {
   }
 
@@ -98,6 +103,24 @@ export class ProductView implements OnInit {
 
       this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
     });
+  }
+
+  // Método que se llama al hacer click en "Agregar Reseña"
+  handleAddReview(): void {
+    // Si NO está logueado, mostramos el diálogo de aviso
+    if (!this.authService.isLoggedIn()) {
+      this.dialog.open(Message, {
+        data: {
+          title: 'Inicia sesión',
+          message: 'Debes iniciar sesión para agregar una reseña.',
+          confirmText: 'Entendido',
+        },
+      });
+      return;
+    }
+
+    // Si SÍ está logueado, sigue con la lógica normal de agregar reseña
+    // ... tu lógica aquí
   }
 
   // Cambia al slide anterior del carrusel de imágenes.
