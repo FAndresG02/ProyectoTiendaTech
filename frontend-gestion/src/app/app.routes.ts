@@ -3,11 +3,14 @@ import { AdminLayout } from './components/common/layouts/admin-layout/admin-layo
 import { MainPage } from './components/pages/main-page/main-page';
 
 export const routes: Routes = [
+
+    {path: '', component: MainPage},
+    
     {
-        path: '',
+        path: 'tec',
         component: AdminLayout,
         children: [
-            { path: '', component: MainPage },
+            
         ]
     },
 
